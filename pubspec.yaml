@@ -4,8 +4,6 @@ description: Rocket is a parsing framework for parsing using efficient parsing a
 homepage: https://github.com/mezoni/rocket
 environment:
   sdk: '>=2.13.0 < 3.0.0'
-dependencies:  
-  strings: ^0.2.1
 dev_dependencies:
   charcode: ^1.2.0
   lints: ^1.0.1

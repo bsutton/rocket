@@ -182,12 +182,6 @@ class _Member extends AroundParser<String, dynamic> {
 
 class _Members extends SepByParser<Tuple2<String, dynamic>> {
   _Members() : super(_member, _comma);
-
-  @override
-  bool fastParse(state) => super.fastParse(state);
-
-  @override
-  Tuple1<List<Tuple2<String, dynamic>>>? parse(state) => super.parse(state);
 }
 
 class _Null extends _Term {

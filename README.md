@@ -187,7 +187,53 @@ Of course, it is possible to create a combination of parsers for complex grammar
 But debugging such a combination will not be easy.  
 These parsers will not have their own face.  
 
-### Perfomance
+### How the error reporting system works
+
+To begin with, what are the types of error messages.  
+You can use any type of value as the error message. When building error message, it will be cast to the `String` value (`error.toString()`).  
+But to improve error reporting, there is currently a special type `ParseError`.  
+It is designed to grouping the most common messages of the same type.  
+There are two predefined types, but you can create and use your own.  
+These two types are:  
+
+```dart
+ExpectedError
+UnexpectedError
+```
+
+Error messages created using these types will be combined into one message (by key of each type) with all messages of this type.
+
+The type `ParseError` is declared as follows:
+
+```dart
+abstract class ParseError {
+  String get element;
+  String get key;
+}
+```
+
+Examples of generating error messages:
+
+```dart
+class _Comma extends OrFailParser {
+  _Comma() : super(seq2(char($comma), _white), expectedError(','));
+}
+```
+
+```dart
+str('Hello').orFail(expectedError('Hello'));
+```
+
+```dart
+final r = p.parse(state);
+if (r == null) {
+  state.fail(expectedError('some value'), state.pos);
+}
+```
+
+By default, no error messages are generated (unless otherwise noted) for performance reasons.
+
+### Performance
 
 Below are the results of testing JSON parsers. Dart SDK JSON parser and JSON parser implemented using Rocket.  
 

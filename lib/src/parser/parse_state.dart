@@ -7,7 +7,7 @@ class DummyParseState extends ParseState {
   }
 
   @override
-  void fail(String name, int pos) {
+  void fail(error, int pos) {
     return;
   }
 }
@@ -19,7 +19,7 @@ class ParseState {
 
   int failPos = 0;
 
-  Buffer<String> failures = Buffer(100);
+  Buffer failures = Buffer(100);
 
   final int length;
 
@@ -33,27 +33,32 @@ class ParseState {
     }
   }
 
-  FormatException buildError({String? quote = '\''}) {
-    quote ??= '';
+  FormatException buildError() {
     final sink = StringBuffer();
-    final expected = _getExpected();
-    if (expected.isNotEmpty) {
-      sink.write('Expected ');
-      sink.write(expected.map((e) => e).join(', '));
-    } else {
-      sink.write('Unexpected ');
-      if (failPos < pos) {
-        sink.write('character');
-      } else {
-        sink.write('end of file');
+    final parseErrors = failures.whereType<ParseError>();
+    if (parseErrors.isNotEmpty) {
+      final keys = parseErrors.map((e) => e.key).toSet();
+      for (final key in keys) {
+        final elements = parseErrors.where((e) => e.key == key);
+        final quoted = elements.map((e) => '\'${e.element}\'');
+        sink.write(key);
+        sink.write(': ');
+        sink.write(quoted.join(', '));
+        sink.writeln();
       }
+    }
+
+    final set = failures.toSet();
+    set.removeAll(parseErrors);
+    for (final error in set) {
+      sink.writeln(error);
     }
 
     return FormatException(sink.toString(), source, failPos);
   }
 
   @inline
-  void fail(String name, int pos) {
+  void fail(error, int pos) {
     if (failPos > pos) {
       return;
     }
@@ -63,11 +68,11 @@ class ParseState {
       failures.clear();
     }
 
-    failures.add(name);
+    failures.add(error);
   }
 
   @inline
-  void failAll(List<String> names, int pos) {
+  void failAll(List errors, int pos) {
     if (failPos > pos) {
       return;
     }
@@ -77,7 +82,7 @@ class ParseState {
       failures.clear();
     }
 
-    failures.addAll(names);
+    failures.addAll(errors);
   }
 
   int getChar(int pos) {
@@ -148,11 +153,5 @@ class ParseState {
     }
 
     return ch = c;
-  }
-
-  List<String> _getExpected() {
-    final result = Set<String>.from(failures).toList();
-    result.sort();
-    return result;
   }
 }

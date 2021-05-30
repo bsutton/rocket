@@ -1,6 +1,7 @@
 import 'package:charcode/ascii.dart';
 import 'package:rocket/matcher.dart';
 import 'package:rocket/parse.dart';
+import 'package:rocket/parse_error.dart';
 
 import '_parse_number.dart';
 
@@ -31,6 +32,8 @@ final _closeBracket = _CloseBracket();
 final _colon = _Colon();
 
 final _comma = _Comma();
+
+final _eof = _Eof();
 
 final _false = _False();
 
@@ -152,28 +155,33 @@ class _Chars extends Parser<List<int>> {
   }
 }
 
-class _CloseBrace extends PunctParser {
-  _CloseBrace() : super('}', $close_brace, _white);
+class _CloseBrace extends OrFailParser {
+  _CloseBrace() : super(seq2(char($close_brace), _white), expectedError('}'));
 }
 
-class _CloseBracket extends PunctParser {
-  _CloseBracket() : super(']', $close_bracket, _white);
+class _CloseBracket extends OrFailParser {
+  _CloseBracket()
+      : super(seq2(char($close_bracket), _white), expectedError(']'));
 }
 
-class _Colon extends PunctParser {
-  _Colon() : super(':', $colon, _white);
+class _Colon extends OrFailParser {
+  _Colon() : super(seq2(char($colon), _white), expectedError(':'));
 }
 
-class _Comma extends PunctParser {
-  _Comma() : super(',', $comma, _white);
+class _Comma extends OrFailParser {
+  _Comma() : super(seq2(char($comma), _white), expectedError(','));
 }
 
-class _False extends _Term {
+class _Eof extends OrFailParser {
+  _Eof() : super(not(anyChar()), expectedError('end of file'));
+}
+
+class _False extends _Term<bool> {
   _False() : super('false', false);
 }
 
 class _Json extends BetweenParser {
-  _Json() : super(_white, _value, not(anyChar()));
+  _Json() : super(_white, _value, _eof);
 }
 
 class _Member extends AroundParser<String, dynamic> {
@@ -219,7 +227,7 @@ class _Number extends Parser<num> {
   Tuple1<num>? parse(ParseState state) {
     final r1 = _number.parse(state);
     if (r1 == null) {
-      state.fail('number', state.pos);
+      state.fail(expectedError('number'), state.pos);
       return null;
     }
 
@@ -253,12 +261,12 @@ class _Object extends Parser<Map<String, dynamic>> {
   }
 }
 
-class _OpenBrace extends PunctParser {
-  _OpenBrace() : super('{', $open_brace, _white);
+class _OpenBrace extends OrFailParser {
+  _OpenBrace() : super(seq2(char($open_brace), _white), expectedError('{'));
 }
 
-class _OpenBracket extends PunctParser {
-  _OpenBracket() : super('[', $open_bracket, _white);
+class _OpenBracket extends OrFailParser {
+  _OpenBracket() : super(seq2(char($open_bracket), _white), expectedError('['));
 }
 
 class _Ref<E> extends Parser<E> {
@@ -281,7 +289,7 @@ class _String extends Parser<String> {
   bool fastParse(ParseState state) {
     final r1 = chars.parse(state);
     if (r1 == null) {
-      state.fail('string', state.pos);
+      state.fail(expectedError('string'), state.pos);
       return false;
     }
 
@@ -292,7 +300,7 @@ class _String extends Parser<String> {
   Tuple1<String>? parse(ParseState state) {
     final r1 = chars.parse(state);
     if (r1 == null) {
-      state.fail('string', state.pos);
+      state.fail(expectedError('string'), state.pos);
       return null;
     }
 
@@ -322,7 +330,7 @@ class _Term<E> extends Parser<E> {
       return true;
     }
 
-    state.fail(name, state.pos);
+    state.fail(expectedError(name), state.pos);
     return false;
   }
 
@@ -333,7 +341,7 @@ class _Term<E> extends Parser<E> {
       return res;
     }
 
-    state.fail(name, state.pos);
+    state.fail(expectedError(name), state.pos);
   }
 }
 

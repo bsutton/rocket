@@ -1,3 +1,12 @@
+## 0.1.5
+
+- Impoved JSON Parser example
+- Impoved error reporting system
+- Added parser `FailParser`
+- Added parser `OrFailParser`
+- Added parser `ValParser`
+- Added class `ParseError`
+
 ## 0.1.4
 
 - Added optimized parser `DigitParser`

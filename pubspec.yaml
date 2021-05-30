@@ -1,9 +1,11 @@
 name: rocket
-version: 0.1.3
+version: 0.1.4
 description: Rocket is a parsing framework for parsing using efficient parsing algorithms
 homepage: https://github.com/mezoni/rocket
 environment:
   sdk: '>=2.13.0 < 3.0.0'
+dependencies:
+  meta: ^1.4.0
 dev_dependencies:
   charcode: ^1.2.0
   lints: ^1.0.1

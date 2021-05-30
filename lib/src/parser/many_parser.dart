@@ -10,35 +10,10 @@ class Many1Parser<E> extends Parser<List<E>> {
   Many1Parser(this.p);
 
   @override
-  bool fastParse(ParseState state) {
-    if (!p.fastParse(state)) {
-      return false;
-    }
-
-    while (true) {
-      if (!p.fastParse(state)) {
-        return true;
-      }
-    }
-  }
+  bool fastParse(ParseState state) => p.fastParseMany1(state);
 
   @override
-  Tuple1<List<E>>? parse(ParseState state) {
-    final r1 = p.parse(state);
-    if (r1 == null) {
-      return null;
-    }
-
-    final list = [r1.$0];
-    while (true) {
-      final r1 = p.parse(state);
-      if (r1 == null) {
-        return Tuple1(list);
-      }
-
-      list.add(r1.$0);
-    }
-  }
+  Tuple1<List<E>>? parse(ParseState state) => p.parseMany1(state);
 }
 
 class ManyParser<E> extends Parser<List<E>> {
@@ -47,31 +22,10 @@ class ManyParser<E> extends Parser<List<E>> {
   ManyParser(this.p);
 
   @override
-  bool fastParse(ParseState state) {
-    while (true) {
-      if (!p.fastParse(state)) {
-        return true;
-      }
-    }
-  }
+  bool fastParse(ParseState state) => p.fastParseMany(state);
 
   @override
-  Tuple1<List<E>>? parse(ParseState state) {
-    final r1 = p.parse(state);
-    if (r1 == null) {
-      return Tuple1(<E>[]);
-    }
-
-    final list = [r1.$0];
-    while (true) {
-      final r1 = p.parse(state);
-      if (r1 == null) {
-        return Tuple1(list);
-      }
-
-      list.add(r1.$0);
-    }
-  }
+  Tuple1<List<E>>? parse(ParseState state) => p.parseMany(state);
 }
 
 extension Many1ParserExt<E> on Parser<E> {

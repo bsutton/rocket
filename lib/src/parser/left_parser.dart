@@ -41,6 +41,6 @@ class LeftParser<E> extends Parser<E> {
   }
 }
 
-extension LeftParserExt<E> on LeftParser<E> {
+extension LeftParserExt<E> on Parser<E> {
   LeftParser<E> left(Parser p) => LeftParser(this, p);
 }

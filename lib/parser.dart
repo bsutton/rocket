@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 import 'buffer.dart';
 import 'parse.dart';
 import 'range.dart';
@@ -16,6 +18,7 @@ part 'src/parser/capture_parser.dart';
 part 'src/parser/char_parser.dart';
 part 'src/parser/chars_parser.dart';
 part 'src/parser/choice_parser.dart';
+part 'src/parser/digit_parser.dart';
 part 'src/parser/left_parser.dart';
 part 'src/parser/many_parser.dart';
 part 'src/parser/not_parser.dart';

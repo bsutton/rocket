@@ -189,7 +189,7 @@ class _Null extends _Term {
 }
 
 class _Number extends Parser<num> {
-  static final _digit09 = range1(Range($0, $9));
+  static final _digit = digit();
 
   static final _digit19 = range1(Range($1, $9));
 
@@ -197,11 +197,11 @@ class _Number extends Parser<num> {
 
   static final _eE = chars2($e, $E);
 
-  static final _exp = seq3(_eE, _signs.opt, _digit09.many1);
+  static final _exp = seq3(_eE, _signs.opt, _digit.skipMany1);
 
-  static final _frac = seq2(_dot, _digit09.many1);
+  static final _frac = seq2(_dot, _digit.skipMany1);
 
-  static final _integer = choice2(_zero, seq2(_digit19, _digit09.many));
+  static final _integer = choice2(_zero, seq2(_digit19, _digit.skipMany));
 
   static final _minus = char($minus);
 
@@ -345,10 +345,6 @@ class _Value<E> extends _Ref<E> {
   //
 }
 
-class _Values extends SepByParser {
-  _Values() : super(_value, _comma);
-}
-
 class _ValueParser extends Parser {
   final _expected = [
     _openBrace.name,
@@ -387,6 +383,10 @@ class _ValueParser extends Parser {
 
     state.failAll(_expected, state.pos);
   }
+}
+
+class _Values extends SepByParser {
+  _Values() : super(_value, _comma);
 }
 
 class _White extends Parser {

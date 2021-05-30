@@ -1,6 +1,6 @@
 # rocket
 
-Version 0.1.3 (BETA)  
+Version 0.1.4 (BETA)  
 
 Rocket is a parsing framework for parsing using efficient parsing algorithms.
 
@@ -10,6 +10,7 @@ Implement something properly once and reuse it everywhere.
 Parse data as efficiently as possible.  
 Use the capabilities of the framework in combination with your own parsers.  
 Combine handwritten algorithms with built-in parsers for maximum efficiency.  
+Use parsers to quickly implement efficient data validators.  
 
 ### What planned
 
@@ -19,6 +20,174 @@ Combine handwritten algorithms with built-in parsers for maximum efficiency.
 - Useful "how to"
 
 ***To make this project better you can make a donation for development.***  
+
+### What is a parser
+
+A parser is an abstract class called `Parser` that contains two methods. One method for active parsing and one for passive parsing.
+
+```dart
+bool fastParse(ParseState state);
+
+Tuple1<E>? parse(ParseState state);
+```
+
+It also contains other methods, but these are not methods of direct parsing (direct use), but to improve the efficiency of parsing.
+
+### How to parse
+
+The `parse.dart` file contains static extension methods for the class `Parser` to simplify parsing process.  
+Therefore, you should import this file.  
+
+```dart
+import 'package:rocket/parse.dart';
+```
+
+The `charcode` package is also very useful. It is also recommended to use it if simple ASCII character parsing is expected.  
+
+```dart
+import 'package:charcode/ascii.dart';
+```
+
+These `Parser` static extension methods include the following methods:
+
+```dart
+bool fastParseString(ParseState state);
+
+E parseString(ParseState state);
+
+bool tryFastParseString(ParseState state);
+
+Tuple<E>? tryParseString(ParseState state);
+```
+
+The `try` versions do not throw an exception on parse error and return the parse result directly.  
+The result can be one of the following, as defined for methods `fastParse` and `parse`:  
+
+```dart
+true
+false
+null
+Tuple <E>
+```
+
+The other two methods return the parse value directly and throw an exception if no value is present.  
+The value can be anything as defined for the `fastParse` and `parse` methods (including `null`, because `null` is also a normal value).  
+
+```dart
+true
+false
+E
+E?
+```
+
+Example of simple parsing. Simple parsing, in this case, means using a simple combination of parsers.
+
+```dart
+final p1 = digit().skipMany.right(char($Z));
+final v = p1.parseString('100Z');
+print(v); // Z (90)
+```
+
+In case of parsing error, an exception will be thrown.  
+Since this is a simple parsing, the error message will not be descriptive.  
+It's the same as if you are using regular expressions. No message, just result or error.  
+
+In this case, it's better to use safe parsing.  
+
+```dart
+final p1 = digit().skipMany1.right(char($Z));
+final r = p1.tryParseString('Z');
+final v = r?.$0; // <= r.$0 is a result value
+if (v != null) {
+  print(v);
+}
+```
+
+Or in the case of just validation.  
+
+```dart
+final p1 = digit().skipMany1.right(char($Z));
+if (p1.tryFastParseString('1Z')) {
+  print('Parsing passed, data validated');
+}
+```
+
+### How to parse complex data
+
+An example of a complex parser is the JSON parser.  
+https://github.com/mezoni/rocket/blob/main/example/example.dart
+
+*More information will be available later.*
+
+### How to implement a parser from scratch
+
+Relatively speaking, parsers can be divided into several categories.
+
+- Parsers that work directly with data (eg. `char`, `str`)
+- Parsers that iterate over other parsers (eg. `many`, `skipMay`)
+- Parsers that parse sequences of other parsers (`seq2`, `left`)
+- Parsers that parse structures composed of other parsers
+- Parsers that parse alternatives from the list of parsers
+- Some other parsers
+
+In many cases, simple parsing does not require creating your own parsers. If you have a sufficient number of universal and specific parsers at your disposal, then you can achieve the required result by combining parsers. And also by combining combinations of parsers.  
+This is how regular expression parsers work and are used.  
+This framework is also suitable for working and using the same principle.  
+Currently, there are not very many specific parsers in the framework, but their number will increase over time.  
+
+And so what is the answer to this question?  
+The best answer is an example of a real working parser.  
+Take a look at the implementation of basic parsers, see them in action.  
+Copy the source code of any simple parser and modify it. Check it out in action.  
+Test it if possible.
+This will be your own parser.  
+And it doesn't matter that you copied it. This is your own parser, created by you.  
+
+### How to extends a parser
+
+When developing a complex combination of parsers (for example, for a complex grammar), it is often easier to extend an existing universal parser. Instead of writing it from scratch.  
+
+For example, you need to parse a certain sequence, separated by some kind of separator.  
+For this purpose, you can extend the `SepByParser` parser.  
+
+```dart
+class _Values extends SepByParser {
+  _Values() : super(_value, _comma);
+}
+```
+
+How it will works?  
+The `SepByParser` parser is defined as follows:  
+
+```dart
+class SepByParser<E> extends Parser<List<E>> {
+  final Parser<E> p;
+
+  final Parser sep;
+
+  SepByParser(this.p, this.sep);
+}
+```
+
+Thus, by extending this parser, your parser inherits all the functionality of the `SepByParser` parser.  
+Thus, the definition of this constructor already implies that your parser will work similarly to the `SepByParser` parser.  
+
+
+```dart
+_Values() : super(_value, _comma);
+```
+
+Quite reasonably, the question arises: But why extend it if nothing changes in principle?  
+Yes, nothing changes, but nothing worsens.  
+Additional benefits are as follows:
+
+- Increased visibility
+- Debugging process is simplified (because this is a specific parser)
+- Your parser follows `Single-responsibility principle`
+
+Of course, it is possible to create a combination of parsers for complex grammar using only the principle of simple combinations. It's a matter of taste.
+But debugging such a combination will not be easy.  
+These parsers will not have their own face.  
 
 ### Perfomance
 
@@ -58,469 +227,5 @@ Rocket JSON  : k: 1.47, 31.13 MB/s, 174.01 ms (100.00%),
 The Rocket JSON parser was written in a few hours.  
 The parser can be complicated to improve performance by adding some kinds of tweaks (as it was done in the Dart SDK parser), but this will impair the clarity of the parsing algorithms and, in principle, reduce its reliability (theoretically).  
 
-### JSON parser example
 
-```dart
-import 'package:charcode/ascii.dart';
-import 'package:rocket/matcher.dart';
-import 'package:rocket/parse.dart';
-
-import '_parse_number.dart';
-
-export 'package:rocket/parse.dart';
-
-void main() {
-  final text = '''
-{"rocket": "🚀 flies to the stars"}
-''';
-  final p = parser;
-  final r = p.parseString(text);
-  print(r);
-}
-
-final parser = () {
-  _value.p = choice7(_object, _array, _string, _number, _true, _false, _null);
-  return _json;
-}();
-
-final _array = _Array();
-
-final _chars = _Chars();
-
-final _closeBrace = _CloseBrace();
-
-final _closeBracket = _CloseBracket();
-
-final _colon = _Colon();
-
-final _comma = _Comma();
-
-final _false = _False();
-
-final _json = _Json();
-
-final _member = _Member();
-
-final _members = _Members();
-
-final _null = _Null();
-
-final _number = _Number();
-
-final _object = _Object();
-
-final _openBrace = _OpenBrace();
-
-final _openBracket = _OpenBracket();
-
-final _string = _String();
-
-final _true = _True();
-
-final _value = _Value();
-
-final _values = _Values();
-
-final _white = _White();
-
-class _Array extends BetweenParser {
-  _Array() : super(_openBracket, _values, _closeBracket);
-}
-
-class _Chars extends Parser<List<int>> {
-  @override
-  bool fastParse(ParseState state) {
-    parse(state);
-    return true;
-  }
-
-  @override
-  Tuple1<List<int>>? parse(ParseState state) {
-    final list = <int>[];
-    int ch = 0;
-    int pos = 0;
-    loop:
-    while (true) {
-      ch = state.ch;
-      pos = state.pos;
-      var c = state.ch;
-      if ((c >= 0x5d && c <= 0x10ffff) ||
-          (c >= 0x23 && c <= 0x5b) ||
-          (c >= 0x20 && c <= 0x21)) {
-        state.nextChar();
-        list.add(c);
-        continue;
-      }
-
-      if (c != $backslash) {
-        break loop;
-      }
-
-      c = state.nextChar();
-      switch (c) {
-        case $double_quote:
-        case $slash:
-        case $backslash:
-          state.nextChar();
-          list.add(c);
-          continue;
-        case $b:
-          state.nextChar();
-          list.add(0x08);
-          continue;
-        case $f:
-          state.nextChar();
-          list.add(0x0c);
-          continue;
-        case $n:
-          state.nextChar();
-          list.add(0x0d);
-          continue;
-        case $r:
-          state.nextChar();
-          list.add(0x0d);
-          continue;
-        case $t:
-          state.nextChar();
-          list.add(0x09);
-          continue;
-        case $u:
-          state.nextChar();
-          var c2 = 0;
-          for (var i = 0; i < 4; i++) {
-            final c = state.ch;
-            if (c >= $0 && c <= $9) {
-              c2 = (c2 << 4) | (c - 0x30);
-            } else if (c >= $a && c <= $f) {
-              c2 = (c2 << 4) | (c - $a + 10);
-            } else if (c >= $A && c <= $F) {
-              c2 = (c2 << 4) | (c - $A + 10);
-            } else {
-              break loop;
-            }
-
-            state.nextChar();
-          }
-
-          list.add(c2);
-          break;
-        default:
-          break loop;
-      }
-    }
-
-    state.pos = pos;
-    state.ch = ch;
-    return Tuple1(list);
-  }
-}
-
-class _CloseBrace extends PunctParser {
-  _CloseBrace() : super('}', $close_brace, _white);
-}
-
-class _CloseBracket extends PunctParser {
-  _CloseBracket() : super(']', $close_bracket, _white);
-}
-
-class _Colon extends PunctParser {
-  _Colon() : super(':', $colon, _white);
-}
-
-class _Comma extends PunctParser {
-  _Comma() : super(',', $comma, _white);
-}
-
-class _False extends _Term2 {
-  _False() : super('false', false);
-}
-
-class _Json extends BetweenParser {
-  _Json() : super(_white, _value, not(anyChar()));
-}
-
-class _Member extends AroundParser<String, dynamic> {
-  _Member() : super(_string, _colon, _value);
-}
-
-class _Members extends SepByParser<Tuple2<String, dynamic>> {
-  _Members() : super(_member, _comma);
-}
-
-class _Null extends _Term2 {
-  _Null() : super('null', null);
-}
-
-class _Number extends Parser<num> {
-  static final _digit09 = range1(Range($0, $9));
-
-  static final _digit19 = range1(Range($1, $9));
-
-  static final _dot = char($dot);
-
-  static final _eE = chars2($e, $E);
-
-  static final _exp = seq3(_eE, _signs.opt, _digit09.many1);
-
-  static final _frac = seq2(_dot, _digit09.many1);
-
-  static final _integer = choice2(_zero, seq2(_digit19, _digit09.many));
-
-  static final _minus = char($minus);
-
-  static final _number =
-      left(seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture, _white);
-
-  static final _signs = chars2($plus, $minus);
-
-  static final _zero = char($0);
-
-  @override
-  bool fastParse(ParseState state) => parse(state) != null;
-
-  @override
-  Tuple1<num>? parse(ParseState state) {
-    final r1 = _number.parse(state);
-    if (r1 == null) {
-      state.fail('number', state.pos);
-      return null;
-    }
-
-    final v1 = r1.$0;
-    final v2 = parseNumber(v1);
-    return Tuple1(v2);
-  }
-}
-
-class _Object extends Parser<Map<String, dynamic>> {
-  final BetweenParser<List<Tuple2<String, dynamic>>> p;
-
-  _Object() : p = between(_openBrace, _members, _closeBrace);
-
-  @override
-  bool fastParse(ParseState state) => p.fastParse(state);
-
-  @override
-  Tuple1<Map<String, dynamic>>? parse(ParseState state) {
-    final r1 = p.parse(state);
-    if (r1 != null) {
-      final v1 = r1.$0;
-      final v2 = <String, dynamic>{};
-      for (var i = 0; i < v1.length; i++) {
-        final v3 = v1[i];
-        v2[v3.$0] = v3.$1;
-      }
-
-      return Tuple1(v2);
-    }
-  }
-}
-
-class _OpenBrace extends PunctParser {
-  _OpenBrace() : super('{', $open_brace, _white);
-}
-
-class _OpenBracket extends PunctParser {
-  _OpenBracket() : super('[', $open_bracket, _white);
-}
-
-class _Ref<E> extends Parser<E> {
-  Parser<E> p = DummyParser();
-
-  @override
-  bool fastParse(ParseState state) => p.fastParse(state);
-
-  @override
-  Tuple1<E>? parse(ParseState state) => p.parse(state);
-}
-
-class _String extends Parser<String> {
-  final BetweenParser<List<int>> chars;
-
-  _String()
-      : chars = BetweenParser(char($quote), _chars, seq2(char($quote), _white));
-
-  @override
-  bool fastParse(ParseState state) {
-    final r1 = chars.parse(state);
-    if (r1 == null) {
-      state.fail('string', state.pos);
-      return false;
-    }
-
-    return true;
-  }
-
-  @override
-  Tuple1<String>? parse(ParseState state) {
-    final r1 = chars.parse(state);
-    if (r1 == null) {
-      state.fail('string', state.pos);
-      return null;
-    }
-
-    final v1 = r1.$0;
-    final v2 = String.fromCharCodes(v1);
-    return Tuple1(v2);
-  }
-}
-
-class _Term2<E> extends Parser<E> {
-  final String name;
-
-  final Parser p;
-
-  final Tuple1<E> res;
-
-  final Parser white = _white;
-
-  _Term2(this.name, E v)
-      : p = str(name),
-        res = Tuple1(v);
-
-  @override
-  bool fastParse(ParseState state) {
-    if (p.fastParse(state)) {
-      white.fastParse(state);
-      return true;
-    }
-
-    state.fail(name, state.pos);
-    return false;
-  }
-
-  @override
-  Tuple1<E>? parse(ParseState state) {
-    if (p.fastParse(state)) {
-      white.fastParse(state);
-      return res;
-    }
-
-    state.fail(name, state.pos);
-  }
-}
-
-class _True extends _Term2 {
-  _True() : super('true', true);
-}
-
-class _Value<E> extends _Ref<E> {
-  //
-}
-
-class _Values extends SepByParser {
-  _Values() : super(_value, _comma);
-}
-
-class _White extends Parser {
-  final Matcher<int> m =
-      AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
-
-  @override
-  bool fastParse(ParseState state) {
-    while (true) {
-      final c = state.ch;
-      if (m.match(c)) {
-        state.nextChar();
-        continue;
-      }
-
-      return true;
-    }
-  }
-
-  @override
-  Tuple1? parse(ParseState state) {
-    while (true) {
-      final c = state.ch;
-      if (m.match(c)) {
-        state.nextChar();
-        continue;
-      }
-
-      return const Tuple1(null);
-    }
-  }
-}
-
-```
-
-### How to debug
-
-The first way.  
-Temporarily implement the overridden methods and set breakpoints on them.  
-
-Original:
-
-```dart
-class _Members extends SepByParser<Tuple2<String, dynamic>> {
-  _Members() : super(_member, _comma);
-}
-```
-
-Modified:
-
-```dart
-class _Members extends SepByParser<Tuple2<String, dynamic>> {
-  _Members() : super(_member, _comma);
-
-  @override
-   // Set breakpoint here
-  bool fastParse(state) => super.fastParse(state);
-
-  @override
-   // Or here
-  Tuple1<List<Tuple2<String, dynamic>>>? parse(state) => super.parse(state);
-}
-```
-
-Second way.  
-Use a modified implementation of `ParseState` for tracing.  
-This will help you track how the parsing process is going. Not very informative, but at least better than nothing at all. Good for tracking small samples that are throwing errors.  
-A usage example is in the `examples` folder.  
-
-The parsing progress information may look like this (for source ` [true, 10.2]`):  
-
-```
-_White
- [true, 10.2]
-[true, 10.2]
----
-_Ref => PunctParser
-[true, 10.2]
-true, 10.2]
----
-_Ref => _Ref => _Term => StrParser
-true, 10.2]
-, 10.2]
----
-_Ref => PunctParser
-, 10.2]
- 10.2]
----
-_Ref => _White
- 10.2]
-10.2]
----
-_Ref => _Ref => _Number => Range1Parser
-10.2]
-0.2]
----
-_Ref => _Ref => _Number => _Range1ManyParser
-0.2]
-.2]
----
-_Ref => _Ref => _Number => CharParser
-.2]
-2]
----
-_Ref => _Ref => _Number => Range1Parser
-2]
-]
----
-_Ref => PunctParser
-]
----
-```
-
-To be continued...
+*To be continued...*

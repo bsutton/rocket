@@ -10,30 +10,10 @@ class SkipMany1Parser extends Parser {
   SkipMany1Parser(this.p);
 
   @override
-  bool fastParse(ParseState state) {
-    if (!p.fastParse(state)) {
-      return false;
-    }
-
-    while (p.fastParse(state)) {
-      //
-    }
-
-    return true;
-  }
+  bool fastParse(ParseState state) => p.fastParseSkipMany1(state);
 
   @override
-  Tuple1? parse(ParseState state) {
-    if (!p.fastParse(state)) {
-      return null;
-    }
-
-    while (p.fastParse(state)) {
-      //
-    }
-
-    return const Tuple1(null);
-  }
+  Tuple1? parse(ParseState state) => p.parseSkipMany1(state);
 }
 
 class SkipManyParser extends Parser {
@@ -42,22 +22,10 @@ class SkipManyParser extends Parser {
   SkipManyParser(this.p);
 
   @override
-  bool fastParse(ParseState state) {
-    while (p.fastParse(state)) {
-      //
-    }
-
-    return true;
-  }
+  bool fastParse(ParseState state) => p.fastParseSkipMany(state);
 
   @override
-  Tuple1? parse(ParseState state) {
-    while (p.fastParse(state)) {
-      //
-    }
-
-    return const Tuple1(null);
-  }
+  Tuple1? parse(ParseState state) => p.parseSkipMany(state);
 }
 
 extension SkipMany1ParserExt on Parser {

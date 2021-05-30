@@ -1,3 +1,8 @@
+## 0.1.4
+
+- Added optimized parser `DigitParser`
+- Added some information to the `README.md` file
+
 ## 0.1.3
 
 - Added an example of the basic prediction in `example_json_pro.dart`

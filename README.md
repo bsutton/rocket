@@ -1,6 +1,6 @@
 # rocket
 
-Version 0.1.4 (BETA)  
+Version 0.1.5 (BETA)  
 
 Rocket is a parsing framework for parsing using efficient parsing algorithms.
 
@@ -64,20 +64,18 @@ The `try` versions do not throw an exception on parse error and return the parse
 The result can be one of the following, as defined for methods `fastParse` and `parse`:  
 
 ```dart
-true
-false
-null
-Tuple <E>
+true // Success
+false // Failure
+Tuple<E> // Success
+null // Failure
 ```
 
 The other two methods return the parse value directly and throw an exception if no value is present.  
 The value can be anything as defined for the `fastParse` and `parse` methods (including `null`, because `null` is also a normal value).  
 
 ```dart
-true
-false
-E
-E?
+true // Success
+E // Success
 ```
 
 Example of simple parsing. Simple parsing, in this case, means using a simple combination of parsers.
@@ -143,7 +141,7 @@ Test it if possible.
 This will be your own parser.  
 And it doesn't matter that you copied it. This is your own parser, created by you.  
 
-### How to extends a parser
+### How to extend a parser
 
 When developing a complex combination of parsers (for example, for a complex grammar), it is often easier to extend an existing universal parser. Instead of writing it from scratch.  
 

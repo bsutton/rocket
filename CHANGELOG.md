@@ -1,3 +1,7 @@
+## 0.1.3
+
+- Added an example of the basic prediction in `example_json_pro.dart`
+
 ## 0.1.2
 
 - Added static extension methods `fastParseString`, `tryFastParseString` and `tryParseString` to ` Parser`

@@ -1,8 +1,15 @@
 part of '../../parser.dart';
 
+/// Creates the [BetweenParser] parser.
 BetweenParser<E> between<E>(Parser p1, Parser<E> p2, Parser p3) =>
     BetweenParser(p1, p2, p3);
 
+/// The [BetweenParser] parser executes sequentially the [p1], [p2] and [p3]
+/// parsers and parses successfully if all parsers succeed.
+///
+/// The result is the result of parsing [p2] (between [p1] and [p3]).
+///
+/// Example: between(char($quote), char.many, char($quote))
 class BetweenParser<E> extends Parser<E> {
   final Parser p1;
 

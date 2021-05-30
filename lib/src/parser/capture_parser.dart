@@ -1,7 +1,15 @@
 part of '../../parser.dart';
 
+/// Creates the [CaptureParser] parser.
 CaptureParser capture(Parser p) => CaptureParser(p);
 
+/// Parser [CaptureParser] executes passively parser [p] and consumes the
+/// string from the start and end positions of parsing [p] if parsing [p]
+/// succeed.
+///
+/// The result is the consumed string.
+///
+/// Example: capture(p)
 class CaptureParser extends Parser<String> {
   final Parser p;
 

@@ -1,8 +1,16 @@
 part of '../../parser.dart';
 
+/// Creates the [AroundParser] parser.
 AroundParser<E1, E2> around<E1, E2>(Parser<E1> p1, Parser p2, Parser<E2> p3) =>
     AroundParser(p1, p2, p3);
 
+/// The [AroundParser] parser executes sequentially the [p1], [p2] and [p3]
+/// parsers and parses successfully if all parsers succeed.
+///
+/// The result is tuple2 from the results of parsing [p1] and [p3] (around a
+/// [p2]).
+///
+/// Example: around(string, colon, value)
 class AroundParser<E1, E2> extends Parser<Tuple2<E1, E2>> {
   final Parser<E1> p1;
 

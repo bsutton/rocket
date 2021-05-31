@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
+import 'package:rocket/parse.dart';
 
 import 'buffer.dart';
 import 'parse_error.dart';
@@ -23,6 +24,7 @@ part 'src/parser/digit_parser.dart';
 part 'src/parser/fail_parser.dart';
 part 'src/parser/left_parser.dart';
 part 'src/parser/many_parser.dart';
+part 'src/parser/map_parser.dart';
 part 'src/parser/not_parser.dart';
 part 'src/parser/opt_parser.dart';
 part 'src/parser/parse_state.dart';

@@ -1,29 +1,30 @@
 part of '../../parser.dart';
 
-Range1Parser range1(Range r1) => Range1Parser(r1);
+Ranges1Parser ranges1(Range r1) => Ranges1Parser(r1);
 
-Range2Parser range2(Range r1, Range r2) => Range2Parser(r1, r2);
+Ranges2Parser ranges2(Range r1, Range r2) => Ranges2Parser(r1, r2);
 
-Range3Parser range3(Range r1, Range r2, Range r3) => Range3Parser(r1, r2, r3);
+Ranges3Parser ranges3(Range r1, Range r2, Range r3) =>
+    Ranges3Parser(r1, r2, r3);
 
-Range4Parser range4(Range r1, Range r2, Range r3, Range r4) =>
-    Range4Parser(r1, r2, r3, r4);
+Ranges4Parser ranges4(Range r1, Range r2, Range r3, Range r4) =>
+    Ranges4Parser(r1, r2, r3, r4);
 
-Range5Parser range5(Range r1, Range r2, Range r3, Range r4, Range r5) =>
-    Range5Parser(r1, r2, r3, r4, r5);
+Ranges5Parser ranges5(Range r1, Range r2, Range r3, Range r4, Range r5) =>
+    Ranges5Parser(r1, r2, r3, r4, r5);
 
-Range6Parser range6(
+Ranges6Parser ranges6(
         Range r1, Range r2, Range r3, Range r4, Range r5, Range r6) =>
-    Range6Parser(r1, r2, r3, r4, r5, r6);
+    Ranges6Parser(r1, r2, r3, r4, r5, r6);
 
 RangesParser ranges(List<Range> rs) => RangesParser(rs);
 
-class Range1Parser extends Parser<int> {
+class Ranges1Parser extends Parser<int> {
   final int v1;
 
   final int v2;
 
-  Range1Parser(Range r1)
+  Ranges1Parser(Range r1)
       : v1 = r1.start,
         v2 = r1.end;
 
@@ -50,7 +51,7 @@ class Range1Parser extends Parser<int> {
   }
 }
 
-class Range2Parser extends Parser<int> {
+class Ranges2Parser extends Parser<int> {
   final int v1;
 
   final int v2;
@@ -59,7 +60,7 @@ class Range2Parser extends Parser<int> {
 
   final int v4;
 
-  Range2Parser(Range r1, Range r2)
+  Ranges2Parser(Range r1, Range r2)
       : v1 = r1.start,
         v2 = r1.end,
         v3 = r2.start,
@@ -88,7 +89,7 @@ class Range2Parser extends Parser<int> {
   }
 }
 
-class Range3Parser extends Parser<int> {
+class Ranges3Parser extends Parser<int> {
   final int v1;
 
   final int v2;
@@ -101,7 +102,7 @@ class Range3Parser extends Parser<int> {
 
   final int v6;
 
-  Range3Parser(Range r1, Range r2, Range r3)
+  Ranges3Parser(Range r1, Range r2, Range r3)
       : v1 = r1.start,
         v2 = r1.end,
         v3 = r2.start,
@@ -132,7 +133,7 @@ class Range3Parser extends Parser<int> {
   }
 }
 
-class Range4Parser extends Parser<int> {
+class Ranges4Parser extends Parser<int> {
   final int v1;
 
   final int v2;
@@ -149,7 +150,7 @@ class Range4Parser extends Parser<int> {
 
   final int v8;
 
-  Range4Parser(Range r1, Range r2, Range r3, Range r4)
+  Ranges4Parser(Range r1, Range r2, Range r3, Range r4)
       : v1 = r1.start,
         v2 = r1.end,
         v3 = r2.start,
@@ -184,7 +185,7 @@ class Range4Parser extends Parser<int> {
   }
 }
 
-class Range5Parser extends Parser<int> {
+class Ranges5Parser extends Parser<int> {
   final int v1;
 
   final int v2;
@@ -205,7 +206,7 @@ class Range5Parser extends Parser<int> {
 
   final int v10;
 
-  Range5Parser(Range r1, Range r2, Range r3, Range r4, Range r5)
+  Ranges5Parser(Range r1, Range r2, Range r3, Range r4, Range r5)
       : v1 = r1.start,
         v2 = r1.end,
         v3 = r2.start,
@@ -244,7 +245,7 @@ class Range5Parser extends Parser<int> {
   }
 }
 
-class Range6Parser extends Parser<int> {
+class Ranges6Parser extends Parser<int> {
   final int v1;
 
   final int v2;
@@ -269,7 +270,7 @@ class Range6Parser extends Parser<int> {
 
   final int v12;
 
-  Range6Parser(Range r1, Range r2, Range r3, Range r4, Range r5, Range r6)
+  Ranges6Parser(Range r1, Range r2, Range r3, Range r4, Range r5, Range r6)
       : v1 = r1.start,
         v2 = r1.end,
         v3 = r2.start,
@@ -370,7 +371,7 @@ class _Range1ManyParser extends ManyParser<int> {
 
   final int v2;
 
-  _Range1ManyParser(Range1Parser p, Range r1)
+  _Range1ManyParser(Ranges1Parser p, Range r1)
       : v1 = r1.start,
         v2 = r1.end,
         super(p);

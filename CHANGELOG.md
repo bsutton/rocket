@@ -1,3 +1,9 @@
+## 0.1.6
+
+- API documentation process started
+- Breaking change, classes `RangeNParser` (where N indicates the number) renamed to `RangesNParser`
+- Added parser `MapParser`
+
 ## 0.1.5
 
 - Impoved JSON Parser example

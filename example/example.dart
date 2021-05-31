@@ -199,7 +199,7 @@ class _Null extends _Term {
 class _Number extends Parser<num> {
   static final _digit = digit();
 
-  static final _digit19 = range1(Range($1, $9));
+  static final _digit19 = ranges1(Range($1, $9));
 
   static final _dot = char($dot);
 

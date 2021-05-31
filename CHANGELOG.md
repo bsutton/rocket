@@ -1,3 +1,7 @@
+## 0.1.7
+
+- Partially added API documentation
+
 ## 0.1.6
 
 - API documentation process started

@@ -1,29 +1,43 @@
 part of '../../parser.dart';
 
+/// Creates the [ChoiceParser] parser.
 ChoiceParser<E> choice<E>(List<Parser<E>> ps) => ChoiceParser(ps);
 
+/// Creates the [Choice2Parser] parser.
 Choice2Parser<E> choice2<E>(Parser<E> p1, Parser<E> p2) =>
     Choice2Parser(p1, p2);
 
+/// Creates the [Choice3Parser] parser.
 Choice3Parser<E> choice3<E>(Parser<E> p1, Parser<E> p2, Parser<E> p3) =>
     Choice3Parser(p1, p2, p3);
 
+/// Creates the [Choice4Parser] parser.
 Choice4Parser<E> choice4<E>(
         Parser<E> p1, Parser<E> p2, Parser<E> p3, Parser<E> p4) =>
     Choice4Parser(p1, p2, p3, p4);
 
+/// Creates the [Choice5Parser] parser.
 Choice5Parser<E> choice5<E>(
         Parser<E> p1, Parser<E> p2, Parser<E> p3, Parser<E> p4, Parser<E> p5) =>
     Choice5Parser(p1, p2, p3, p4, p5);
 
+/// Creates the [Choice6Parser] parser.
 Choice6Parser<E> choice6<E>(Parser<E> p1, Parser<E> p2, Parser<E> p3,
         Parser<E> p4, Parser<E> p5, Parser<E> p6) =>
     Choice6Parser(p1, p2, p3, p4, p5, p6);
 
+/// Creates the [Choice7Parser] parser.
 Choice7Parser<E> choice7<E>(Parser<E> p1, Parser<E> p2, Parser<E> p3,
         Parser<E> p4, Parser<E> p5, Parser<E> p6, Parser<E> p7) =>
     Choice7Parser(p1, p2, p3, p4, p5, p6, p7);
 
+/// The [Choice2Parser] parser invokes [p1]or [p2] until one of them parses
+/// successfully.
+///
+/// Returns the result of parsing one of the parsers.
+/// ```dart
+/// final p = choice2(p1, p2);
+/// ```
 class Choice2Parser<E> extends Parser<E> {
   final Parser<E> p1;
 
@@ -58,6 +72,13 @@ class Choice2Parser<E> extends Parser<E> {
   }
 }
 
+/// The [Choice3Parser] parser invokes [p1], [p2] or [p3]
+/// until one of them parses successfully.
+///
+/// Returns the result of parsing one of the parsers.
+/// ```dart
+/// final p = choice3(p1, p2, p3);
+/// ```
 class Choice3Parser<E> extends Parser<E> {
   final Parser<E> p1;
 
@@ -103,6 +124,13 @@ class Choice3Parser<E> extends Parser<E> {
   }
 }
 
+/// The [Choice4Parser] parser invokes [p1], [p2], [p3] or [p4]
+/// until one of them parses successfully.
+///
+/// Returns the result of parsing one of the parsers.
+/// ```dart
+/// final p = choice4(p1, p2, p3, p4);
+/// ```
 class Choice4Parser<E> extends Parser<E> {
   final Parser<E> p1;
 
@@ -159,6 +187,13 @@ class Choice4Parser<E> extends Parser<E> {
   }
 }
 
+/// The [Choice5Parser] parser invokes [p1], [p2], [p3], [p4] or [p5]
+/// until one of them parses successfully.
+///
+/// Returns the result of parsing one of the parsers.
+/// ```dart
+/// final p = choice5(p1, p2, p3, p4, p5);
+/// ```
 class Choice5Parser<E> extends Parser<E> {
   final Parser<E> p1;
 
@@ -226,6 +261,13 @@ class Choice5Parser<E> extends Parser<E> {
   }
 }
 
+/// The [Choice6Parser] parser invokes [p1], [p2], [p3], [p4], [p5] or [p6]
+/// until one of them parses successfully.
+///
+/// Returns the result of parsing one of the parsers.
+/// ```dart
+/// final p = choice6(p1, p2, p3, p4, p5, p6);
+/// ```
 class Choice6Parser<E> extends Parser<E> {
   final Parser<E> p1;
 
@@ -304,6 +346,13 @@ class Choice6Parser<E> extends Parser<E> {
   }
 }
 
+/// The [Choice7Parser] parser invokes [p1], [p2], [p3], [p4], [p5], [p6] or
+/// [p7] until one of them parses successfully.
+///
+/// Returns the result of parsing one of the parsers.
+/// ```dart
+/// final p = choice7(p1, p2, p3, p4, p5, p6, p7);
+/// ```
 class Choice7Parser<E> extends Parser<E> {
   final Parser<E> p1;
 
@@ -393,6 +442,13 @@ class Choice7Parser<E> extends Parser<E> {
   }
 }
 
+/// The [ChoiceParser] parser iterates over and invokes the parsers from [ps]
+/// until one of them parses successfully.
+///
+/// Returns the result of parsing one of the parsers.
+/// ```dart
+/// final p = choice([p1, p2]);
+/// ```
 class ChoiceParser<E> extends Parser<E> {
   final List<Parser<E>> ps;
 

@@ -4,12 +4,13 @@ part of '../../parser.dart';
 BetweenParser<E> between<E>(Parser p1, Parser<E> p2, Parser p3) =>
     BetweenParser(p1, p2, p3);
 
-/// The [BetweenParser] parser executes sequentially the [p1], [p2] and [p3]
-/// parsers and parses successfully if all parsers succeed.
+/// The [BetweenParser] parser invokes sequentially [p1], [p2] and [p3] and
+/// parses successfully if all parsers succeed.
 ///
-/// The result is the result of parsing [p2] (between [p1] and [p3]).
-///
-/// Example: between(char($quote), char.many, char($quote))
+/// Returns the result of [p2].
+/// ```
+/// final string = between(char($quote), char.many, char($quote));
+/// ```
 class BetweenParser<E> extends Parser<E> {
   final Parser p1;
 
@@ -55,5 +56,9 @@ class BetweenParser<E> extends Parser<E> {
 }
 
 extension BetweenParserExt<E> on Parser<E> {
+  /// Creates the [BetweenParser] parser.
+  /// ```dart
+  /// final p = chars.many.between(quote, quote);
+  /// ```
   BetweenParser<E> between(Parser p1, Parser p2) => BetweenParser(p1, this, p2);
 }

@@ -1,7 +1,15 @@
 part of '../../parser.dart';
 
+/// Creates the [LeftParser] parser.
 LeftParser<E> left<E>(Parser<E> p1, Parser p2) => LeftParser(p1, p2);
 
+/// The [LeftParser] parser invokes sequentially [p1] and [p2] and parses
+/// successfully if all parsers succeed.
+///
+/// Returns the result of parsing [p1].
+/// ```
+/// final p = left(p1, p2);
+/// ```
 class LeftParser<E> extends Parser<E> {
   final Parser<E> p1;
 
@@ -42,5 +50,9 @@ class LeftParser<E> extends Parser<E> {
 }
 
 extension LeftParserExt<E> on Parser<E> {
+  /// Creates the [LeftParser] parser.
+  /// ```dart
+  /// final p = p1.left(p2);
+  /// ```
   LeftParser<E> left(Parser p) => LeftParser(this, p);
 }

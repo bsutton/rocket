@@ -1,7 +1,14 @@
 part of '../../parser.dart';
 
+/// Creates the [StrParser] parser.
 StrParser str<E>(String s) => StrParser(s);
 
+/// The [StrParser] parser consumes the string [s].
+///
+/// Returns the string [s].
+/// ```dart
+/// final p = str('hello');
+/// ```
 class StrParser extends Parser<String> {
   final String s;
 

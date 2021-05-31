@@ -2,6 +2,8 @@ part of '../../parser.dart';
 
 const inline = pragma('vm:prefer-inline');
 
+/// The [DummyParser] is parser that doesn't parse anything and is used as a
+/// temporary stub when defining recursive parsers.
 class DummyParser<E> extends Parser<E> {
   @override
   bool fastParse(ParseState state) {
@@ -15,6 +17,15 @@ class DummyParser<E> extends Parser<E> {
 }
 
 abstract class Parser<E> {
+  /// Parses input data passively, with minimal consumption of system resources
+  /// during parsing.
+  ///
+  /// Returns [true] if parsing was successful; otherwise returns [false].
+  /// ```dart
+  /// if(!fastParse(state)) {
+  ///   state.fail(err, state.pos);
+  /// }
+  /// ```
   bool fastParse(ParseState state);
 
   @experimental
@@ -84,6 +95,13 @@ abstract class Parser<E> {
     return true;
   }
 
+  /// Parses input data actively and produces the result.
+  ///
+  /// Returns [Tuple1] of the result if parsing was successful; otherwise
+  /// returns [null].
+  /// ```
+  /// final r1 = p.parse(state);
+  /// ```
   Tuple1<E>? parse(ParseState state);
 
   @experimental

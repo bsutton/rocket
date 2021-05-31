@@ -3,12 +3,12 @@ part of '../../parser.dart';
 /// Creates the [AnyCharParser] parser.
 AnyCharParser anyChar() => AnyCharParser();
 
-/// The [AnyCharParser] parser consumes any character and returns that
-/// character as the result.
+/// The [AnyCharParser] parser consumes any character from input.
 ///
-/// The result is the consumed character.
-///
-/// Example: not(anyChar())
+/// Returns any character.
+/// ```dart
+/// final eof = not(anyChar());
+/// ```
 class AnyCharParser extends Parser<int> {
   AnyCharParser();
 

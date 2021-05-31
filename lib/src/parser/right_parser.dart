@@ -1,7 +1,15 @@
 part of '../../parser.dart';
 
+/// Creates the [RightParser] parser.
 RightParser<E> right<E>(Parser p1, Parser<E> p2) => RightParser(p1, p2);
 
+/// The [RightParser] parser invokes sequentially [p1] and [p2] and parses
+/// successfully if all parsers succeed.
+///
+/// Returns the result of parsing [p2].
+/// ```
+/// final p = right(p1, p2);
+/// ```
 class RightParser<E> extends Parser<E> {
   final Parser p1;
 
@@ -42,5 +50,9 @@ class RightParser<E> extends Parser<E> {
 }
 
 extension RightParserExt on Parser {
+  /// Creates the [RightParser] parser.
+  /// ```dart
+  /// final p = p1.right(p2);
+  /// ```
   RightParser<E> right<E>(Parser<E> p) => RightParser(this, p);
 }

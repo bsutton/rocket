@@ -27,9 +27,10 @@ Chars7Parser chars7(int c1, int c2, int c3, int c4, int c5, int c6, int c7) =>
 
 /// The [Char2Parser] parser consumes one of 2 characters [c1], [c2].
 ///
-/// The result is the consumed character.
-///
-/// Example: chars2(48, 49)
+/// Returns the consumed character.
+/// ```dart
+/// final cs = chars2(48, 49);
+/// ```
 class Chars2Parser extends Parser<int> {
   final int c1;
 
@@ -60,9 +61,10 @@ class Chars2Parser extends Parser<int> {
 
 /// The [Char3Parser] parser consumes one of 3 characters [c1], [c2], [c3].
 ///
-/// The result is the consumed character.
-///
-/// Example: chars3(48, 49, 50)
+/// Returns the consumed character.
+/// ```dart
+/// final cs = chars3(48, 49, 50);
+/// ```
 class Chars3Parser extends Parser<int> {
   final int c1;
 
@@ -96,9 +98,10 @@ class Chars3Parser extends Parser<int> {
 /// The [Char4Parser] parser consumes one of 4 characters [c1], [c2], [c3],
 /// [c4].
 ///
-/// The result is the consumed character.
-///
-/// Example: chars4(48, 49, 50, 51)
+/// Returns the consumed character.
+/// ```dart
+/// final cs = chars4(48, 49, 50, 51);
+/// ```
 class Chars4Parser extends Parser<int> {
   final int c1;
 
@@ -134,9 +137,10 @@ class Chars4Parser extends Parser<int> {
 /// The [Char5Parser] parser consumes one of 5 characters [c1], [c2], [c3],
 /// [c4], [c5].
 ///
-/// The result is the consumed character.
-///
-/// Example: chars5(48, 49, 50, 51, 52)
+/// Returns the consumed character.
+/// ```dart
+/// final cs = chars5(48, 49, 50, 51, 52);
+/// ```
 class Chars5Parser extends Parser<int> {
   final int c1;
 
@@ -174,9 +178,10 @@ class Chars5Parser extends Parser<int> {
 /// The [Char6Parser] parser consumes one of 6 characters [c1], [c2], [c3],
 /// [c4], [c5], [c6].
 ///
-/// The result is the consumed character.
-///
-/// Example: chars6(48, 49, 50, 51, 52, 53)
+/// Returns the consumed character.
+/// ```dart
+/// final cs = chars6(48, 49, 50, 51, 52, 53);
+/// ```
 class Chars6Parser extends Parser<int> {
   final int c1;
 
@@ -216,9 +221,10 @@ class Chars6Parser extends Parser<int> {
 /// The [Char7Parser] parser consumes one of 7 characters [c1], [c2], [c3],
 /// [c4], [c5], [c6], [c7].
 ///
-/// The result is the consumed character.
-///
-/// Example: chars7(48, 49, 50, 51, 52, 53, 54)
+/// Returns the consumed character.
+/// ```dart
+/// final cs = chars7(48, 49, 50, 51, 52, 53, 54);
+/// ```
 class Chars7Parser extends Parser<int> {
   final int c1;
 
@@ -271,9 +277,10 @@ class Chars7Parser extends Parser<int> {
 
 /// The [CharParser] parser consumes one of characters [cs].
 ///
-/// The result is the consumed character.
-///
-/// Example: chars(cs)
+/// Returns the consumed character.
+/// ```dart
+/// final cs = chars([48, 49]);
+/// ```
 class CharsParser extends Parser<int> {
   Uint32List _cs = Uint32List(0);
 

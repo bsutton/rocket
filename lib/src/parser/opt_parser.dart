@@ -1,7 +1,14 @@
 part of '../../parser.dart';
 
+/// Creates the [OptParser] parser.
 OptParser<E> opt<E>(Parser<E> p) => OptParser(p);
 
+/// The [ValParser] invokes [p] and parses successfully.
+///
+/// Returns the result of pasing [p] or [null].
+/// ```dart
+/// final p = opt(p1);
+/// ```
 class OptParser<E> extends Parser<E?> {
   final Parser<E> p;
 
@@ -25,5 +32,9 @@ class OptParser<E> extends Parser<E?> {
 }
 
 extension OptParserExt<E> on Parser<E> {
+  /// Creates the [OptParser] parser.
+  /// ```dart
+  /// final p = p1.opt;
+  /// ```
   OptParser<E> get opt => OptParser(this);
 }

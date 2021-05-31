@@ -3,13 +3,13 @@ part of '../../parser.dart';
 /// Creates the [CaptureParser] parser.
 CaptureParser capture(Parser p) => CaptureParser(p);
 
-/// Parser [CaptureParser] executes passively parser [p] and consumes the
-/// string from the start and end positions of parsing [p] if parsing [p]
-/// succeed.
+/// Parser [CaptureParser] invokes passively [p] and consumes the string from
+/// the start and end positions of parsing [p] if parsing [p] succeed.
 ///
-/// The result is the consumed string.
-///
-/// Example: capture(p)
+/// Returns the consumed string.
+/// ```
+/// final n = capture(ranges1(Range(48, 57)).skipMany1).map(int.parse);
+/// ```
 class CaptureParser extends Parser<String> {
   final Parser p;
 
@@ -35,5 +35,9 @@ class CaptureParser extends Parser<String> {
 }
 
 extension CaptureParserExt on Parser {
+  /// Creates the [CaptureParser] parser.
+  /// ```dart
+  /// final n = ranges1(Range(48, 57)).skipMany1.capture.map(int.parse);
+  /// ```
   CaptureParser get capture => CaptureParser(this);
 }

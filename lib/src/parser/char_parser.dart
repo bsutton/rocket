@@ -5,9 +5,10 @@ CharParser char(int c) => CharParser(c);
 
 /// The [CharParser] parser consumes one character [c].
 ///
-/// The result is the consumed character [c].
-///
-/// Example: char(48)
+/// Returns the character [c].
+/// ```dart
+/// final a = char(97);
+/// ```
 class CharParser extends Parser<int> {
   final int c;
 

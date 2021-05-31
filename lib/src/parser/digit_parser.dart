@@ -1,7 +1,14 @@
 part of '../../parser.dart';
 
+/// Creates the [DigitParser] parser.
 DigitParser digit() => DigitParser();
 
+/// The [DigitParser] consumes one character in the range [0..9].
+///
+/// Returns the consumed character.
+/// ```dart
+/// final d = digit().skipMany1.capture.map(int.parse);
+/// ```
 class DigitParser extends Parser<int> {
   final _tab = List<Tuple1<int>>.generate(10, (i) => Tuple1(i));
 

@@ -1,7 +1,18 @@
 part of '../../parser.dart';
 
+/// Creates the [FailParser] parser.
 FailParser<E> fail<E>(err) => FailParser(err);
 
+/// Creates the [OrFailParser] parser.
+OrFailParser<E> orFail<E>(Parser<E> p, err) => OrFailParser(p, err);
+
+/// The [FailParser] parser invokes the method `state.fail (err, state.pos)` and
+///  does not succeed.
+///
+/// Returns nothing.
+/// ```dart
+/// final p = choice2(str('true', fail(err)));
+/// ```
 class FailParser<E> extends Parser<E> {
   final dynamic err;
 
@@ -19,6 +30,14 @@ class FailParser<E> extends Parser<E> {
   }
 }
 
+/// The [OrFailParser] parser invokes [p] and parses successfully if [p]
+/// succeed; otherwise invoke the method `state.fail (err, state.pos)` and does
+/// not succeed.
+///
+/// Returns result of parsing [p].
+/// ```dart
+/// final p = choice2(str('true', fail(err)));
+/// ```
 class OrFailParser<E> extends Parser<E> {
   final dynamic err;
 
@@ -48,5 +67,9 @@ class OrFailParser<E> extends Parser<E> {
 }
 
 extension OrFailParserExt<E> on Parser<E> {
-  Parser<E> orFail(err) => OrFailParser(this, err);
+  /// Creates the [OrFailParser] parser.
+  /// ```dart
+  /// final p = str('true').orFail(err);
+  /// ```
+  OrFailParser<E> orFail(err) => OrFailParser(this, err);
 }

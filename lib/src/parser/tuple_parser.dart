@@ -1,20 +1,25 @@
 part of '../../parser.dart';
 
+/// Creates the [Tuple2Parser] parser.
 Tuple2Parser<E1, E2> tuple2<E1, E2>(Parser<E1> p1, Parser<E2> p2) =>
     Tuple2Parser(p1, p2);
 
+/// Creates the [Tuple3Parser] parser.
 Tuple3Parser<E1, E2, E3> tuple3<E1, E2, E3>(
         Parser<E1> p1, Parser<E2> p2, Parser<E3> p3) =>
     Tuple3Parser(p1, p2, p3);
 
+/// Creates the [Tuple4Parser] parser.
 Tuple4Parser<E1, E2, E3, E4> tuple4<E1, E2, E3, E4>(
         Parser<E1> p1, Parser<E2> p2, Parser<E3> p3, Parser<E4> p4) =>
     Tuple4Parser(p1, p2, p3, p4);
 
+/// Creates the [Tuple5Parser] parser.
 Tuple5Parser<E1, E2, E3, E4, E5> tuple5<E1, E2, E3, E4, E5>(Parser<E1> p1,
         Parser<E2> p2, Parser<E3> p3, Parser<E4> p4, Parser<E5> p5) =>
     Tuple5Parser(p1, p2, p3, p4, p5);
 
+/// Creates the [Tuple6Parser] parser.
 Tuple6Parser<E1, E2, E3, E4, E5, E6> tuple6<E1, E2, E3, E4, E5, E6>(
         Parser<E1> p1,
         Parser<E2> p2,
@@ -24,6 +29,7 @@ Tuple6Parser<E1, E2, E3, E4, E5, E6> tuple6<E1, E2, E3, E4, E5, E6>(
         Parser<E6> p6) =>
     Tuple6Parser(p1, p2, p3, p4, p5, p6);
 
+/// Creates the [Tuple7Parser] parser.
 Tuple7Parser<E1, E2, E3, E4, E5, E6, E7> tuple7<E1, E2, E3, E4, E5, E6, E7>(
         Parser<E1> p1,
         Parser<E2> p2,
@@ -34,6 +40,13 @@ Tuple7Parser<E1, E2, E3, E4, E5, E6, E7> tuple7<E1, E2, E3, E4, E5, E6, E7>(
         Parser<E7> p7) =>
     Tuple7Parser(p1, p2, p3, p4, p5, p6, p7);
 
+/// The [Tuple2Parser] parser invokes sequentially [p1] and [p2] and parses
+/// successfully if all parsers succeed.
+///
+/// Returns [Tuple2] of parsing result of all parsers.
+/// ```
+/// final p = tuple2(p1, p2);
+/// ```
 class Tuple2Parser<E1, E2> extends Parser<Tuple2<E1, E2>> {
   final Parser<E1> p1;
 
@@ -74,6 +87,13 @@ class Tuple2Parser<E1, E2> extends Parser<Tuple2<E1, E2>> {
   }
 }
 
+/// The [Tuple3Parser] parser invokes sequentially [p1], [p2] and [p3] and
+///  parses successfully if all parsers succeed.
+///
+/// Returns [Tuple3] of parsing result of all parsers.
+/// ```
+/// final p = tuple3(p1, p2, p3);
+/// ```
 class Tuple3Parser<E1, E2, E3> extends Parser<Tuple3<E1, E2, E3>> {
   final Parser<E1> p1;
 
@@ -121,6 +141,13 @@ class Tuple3Parser<E1, E2, E3> extends Parser<Tuple3<E1, E2, E3>> {
   }
 }
 
+/// The [Tuple4Parser] parser invokes sequentially [p1], [p2], [p3] and [p4] and
+///  parses successfully if all parsers succeed.
+///
+/// Returns [Tuple4] of parsing result of all parsers.
+/// ```
+/// final p = tuple4(p1, p2, p3, p4);
+/// ```
 class Tuple4Parser<E1, E2, E3, E4> extends Parser<Tuple4<E1, E2, E3, E4>> {
   final Parser<E1> p1;
 
@@ -175,6 +202,13 @@ class Tuple4Parser<E1, E2, E3, E4> extends Parser<Tuple4<E1, E2, E3, E4>> {
   }
 }
 
+/// The [Tuple5Parser] parser invokes sequentially [p1], [p2], [p3], [p4] and
+/// [p5] and parses successfully if all parsers succeed.
+///
+/// Returns [Tuple5] of parsing result of all parsers.
+/// ```
+/// final p = tuple5(p1, p2, p3, p4, p5);
+/// ```
 class Tuple5Parser<E1, E2, E3, E4, E5>
     extends Parser<Tuple5<E1, E2, E3, E4, E5>> {
   final Parser<E1> p1;
@@ -237,6 +271,13 @@ class Tuple5Parser<E1, E2, E3, E4, E5>
   }
 }
 
+/// The [Tuple6Parser] parser invokes sequentially [p1], [p2], [p3], [p4], [p5]
+/// and [p6] and parses successfully if all parsers succeed.
+///
+/// Returns [Tuple6] of parsing result of all parsers.
+/// ```
+/// final p = tuple6(p1, p2, p3, p4, p5, p6);
+/// ```
 class Tuple6Parser<E1, E2, E3, E4, E5, E6>
     extends Parser<Tuple6<E1, E2, E3, E4, E5, E6>> {
   final Parser<E1> p1;
@@ -306,6 +347,13 @@ class Tuple6Parser<E1, E2, E3, E4, E5, E6>
   }
 }
 
+/// The [Tuple7Parser] parser invokes sequentially [p1], [p2], [p3], [p4], [p5],
+///  [p6] and [p7] and parses successfully if all parsers succeed.
+///
+/// Returns [Tuple7] of parsing result of all parsers.
+/// ```
+/// final p = tuple7(p1, p2, p3, p4, p5, p6, p7);
+/// ```
 class Tuple7Parser<E1, E2, E3, E4, E5, E6, E7>
     extends Parser<Tuple7<E1, E2, E3, E4, E5, E6, E7>> {
   final Parser<E1> p1;
@@ -384,31 +432,48 @@ class Tuple7Parser<E1, E2, E3, E4, E5, E6, E7>
 }
 
 extension Tuple2ParserExt<E1, E2> on Tuple2Parser<E1, E2> {
+  /// Creates the [Tuple3Parser] parser.
+  /// ```dart
+  /// final p = p1.andThen(p2).andThen(p3);
+  /// ```
   Tuple3Parser<E1, E2, E3> andThen<E3>(Parser<E3> p) => Tuple3Parser(p1, p2, p);
 }
 
-extension Tuple2ParserExt2<T> on Parser<T> {
-  Tuple2Parser<T, E> tuple2<E>(Parser<E> p) => Tuple2Parser(this, p);
-}
-
 extension Tuple3ParserExt<E1, E2, E3> on Tuple3Parser<E1, E2, E3> {
+  /// Creates the [Tuple4Parser] parser.
+  /// ```dart
+  /// final p = p1.andThen(p2).andThen(p3).andThen(p4);
+  /// ```
   Tuple4Parser<E1, E2, E3, E4> andThen<E4>(Parser<E4> p) =>
       Tuple4Parser(p1, p2, p3, p);
 }
 
 extension Tuple4ParserExt<E1, E2, E3, E4> on Tuple4Parser<E1, E2, E3, E4> {
+  /// Creates the [Tuple5Parser] parser.
+  /// ```dart
+  /// final p = p1.andThen(p2).andThen(p3).andThen(p4).andThen(p5);
+  /// ```
   Tuple5Parser<E1, E2, E3, E4, E5> andThen<E5>(Parser<E5> p) =>
       Tuple5Parser(p1, p2, p3, p4, p);
 }
 
 extension Tuple5ParserExt<E1, E2, E3, E4, E5>
     on Tuple5Parser<E1, E2, E3, E4, E5> {
+  /// Creates the [Tuple6Parser] parser.
+  /// ```dart
+  /// final p = p1.andThen(p2).andThen(p3).andThen(p4).andThen(p5).andThen(p6);
+  /// ```
   Tuple6Parser<E1, E2, E3, E4, E5, E6> andThen<E6>(Parser<E6> p) =>
       Tuple6Parser(p1, p2, p3, p4, p5, p);
 }
 
 extension Tuple6ParserExt<E1, E2, E3, E4, E5, E6>
     on Tuple6Parser<E1, E2, E3, E4, E5, E6> {
+  /// Creates the [Tuple7Parser] parser.
+  /// ```dart
+  /// final p = p1.andThen(p2).andThen(p3).andThen(p4).andThen(p5).andThen(p6)
+  ///   .andThen(p7);
+  /// ```
   Tuple7Parser<E1, E2, E3, E4, E5, E6, E7> andThen<E7>(Parser<E7> p) =>
       Tuple7Parser(p1, p2, p3, p4, p5, p6, p);
 }

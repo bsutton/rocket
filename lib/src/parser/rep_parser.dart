@@ -6,7 +6,7 @@ class RepParser<E> extends RepParserBase<E> {
   RepParser(Parser<E> p, int min, [int? max]) : super(p, min, max);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (!p.fastParse(state)) {
@@ -32,7 +32,7 @@ class RepParser<E> extends RepParserBase<E> {
   }
 
   @override
-  Tuple1<List<E>>? parse(ParseState state) {
+  Tuple1<List<E>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p.parse(state);
@@ -73,6 +73,9 @@ abstract class RepParserBase<E> extends Parser<List<E>> {
     if (max == 0) {
       throw ArgumentError.value(max, 'max', 'Must be greater than 0');
     }
+
+    label = _quote(p) + (max == maxValue ? '{$min}' : '{$min, $max}');
+    quote = false;
   }
 }
 

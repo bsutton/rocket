@@ -2,14 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "example",
-            "program": "example/example.dart",
+            "name": "json_parser",
+            "program": "example/json_parser.dart",
             "request": "launch",
             "type": "dart",
         },
         {
-            "name": "debug_example",
-            "program": "example/debug_example.dart",
+            "name": "csv_parser.dart",
+            "program": "example/csv_parser.dart",
             "request": "launch",
             "type": "dart",
         },

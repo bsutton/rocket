@@ -1,6 +1,6 @@
 # rocket
 
-Version 0.1.7 (BETA)  
+Version 0.1.8 (BETA)  
 
 Rocket is a parsing framework for parsing using efficient parsing algorithms.
 

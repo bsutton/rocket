@@ -10,10 +10,13 @@ AnyCharParser anyChar() => AnyCharParser();
 /// final eof = not(anyChar());
 /// ```
 class AnyCharParser extends Parser<int> {
-  AnyCharParser();
+  AnyCharParser() {
+    label = '.';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     if (state.pos < state.length) {
       state.nextChar();
       return true;
@@ -23,7 +26,7 @@ class AnyCharParser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     if (state.pos < state.length) {
       final ch = state.ch;
       state.nextChar();

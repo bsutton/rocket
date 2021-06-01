@@ -7,25 +7,31 @@ Many1Parser<E> many1<E>(Parser<E> p) => Many1Parser(p);
 class Many1Parser<E> extends Parser<List<E>> {
   final Parser<E> p;
 
-  Many1Parser(this.p);
+  Many1Parser(this.p) {
+    label = _quote(p) + '+';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) => p.fastParseMany1(state);
+  bool handleFastParse(ParseState state) => p.fastParseMany1(state);
 
   @override
-  Tuple1<List<E>>? parse(ParseState state) => p.parseMany1(state);
+  Tuple1<List<E>>? handleParse(ParseState state) => p.parseMany1(state);
 }
 
 class ManyParser<E> extends Parser<List<E>> {
   final Parser<E> p;
 
-  ManyParser(this.p);
+  ManyParser(this.p) {
+    label = _quote(p) + '*';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) => p.fastParseMany(state);
+  bool handleFastParse(ParseState state) => p.fastParseMany(state);
 
   @override
-  Tuple1<List<E>>? parse(ParseState state) => p.parseMany(state);
+  Tuple1<List<E>>? handleParse(ParseState state) => p.parseMany(state);
 }
 
 extension Many1ParserExt<E> on Parser<E> {

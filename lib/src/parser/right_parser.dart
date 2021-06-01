@@ -15,10 +15,12 @@ class RightParser<E> extends Parser<E> {
 
   final Parser<E> p2;
 
-  RightParser(this.p1, this.p2);
+  RightParser(this.p1, this.p2) {
+    label = [p1, p2].map(_quote).join(' =>. ');
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -33,7 +35,7 @@ class RightParser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? parse(ParseState state) {
+  Tuple1<E>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {

@@ -1,3 +1,9 @@
+## 0.1.8
+
+- Added parser `MapperParser`
+- Added parser `RefParser`
+- Added parser `TokCharParser`
+
 ## 0.1.7
 
 - Partially added API documentation

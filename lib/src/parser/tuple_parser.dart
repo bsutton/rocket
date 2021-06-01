@@ -52,10 +52,12 @@ class Tuple2Parser<E1, E2> extends Parser<Tuple2<E1, E2>> {
 
   final Parser<E2> p2;
 
-  Tuple2Parser(this.p1, this.p2);
+  Tuple2Parser(this.p1, this.p2) {
+    label = [p1, p2].map(_quote).join(' ~ ');
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -70,7 +72,7 @@ class Tuple2Parser<E1, E2> extends Parser<Tuple2<E1, E2>> {
   }
 
   @override
-  Tuple1<Tuple2<E1, E2>>? parse(ParseState state) {
+  Tuple1<Tuple2<E1, E2>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p1.parse(state);
@@ -101,10 +103,12 @@ class Tuple3Parser<E1, E2, E3> extends Parser<Tuple3<E1, E2, E3>> {
 
   final Parser<E3> p3;
 
-  Tuple3Parser(this.p1, this.p2, this.p3);
+  Tuple3Parser(this.p1, this.p2, this.p3) {
+    label = [p1, p2, p3].map(_quote).join(' ~ ');
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -121,7 +125,7 @@ class Tuple3Parser<E1, E2, E3> extends Parser<Tuple3<E1, E2, E3>> {
   }
 
   @override
-  Tuple1<Tuple3<E1, E2, E3>>? parse(ParseState state) {
+  Tuple1<Tuple3<E1, E2, E3>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p1.parse(state);
@@ -157,10 +161,12 @@ class Tuple4Parser<E1, E2, E3, E4> extends Parser<Tuple4<E1, E2, E3, E4>> {
 
   final Parser<E4> p4;
 
-  Tuple4Parser(this.p1, this.p2, this.p3, this.p4);
+  Tuple4Parser(this.p1, this.p2, this.p3, this.p4) {
+    label = [p1, p2, p3, p4].map(_quote).join(' ~ ');
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -179,7 +185,7 @@ class Tuple4Parser<E1, E2, E3, E4> extends Parser<Tuple4<E1, E2, E3, E4>> {
   }
 
   @override
-  Tuple1<Tuple4<E1, E2, E3, E4>>? parse(ParseState state) {
+  Tuple1<Tuple4<E1, E2, E3, E4>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p1.parse(state);
@@ -221,10 +227,12 @@ class Tuple5Parser<E1, E2, E3, E4, E5>
 
   final Parser<E5> p5;
 
-  Tuple5Parser(this.p1, this.p2, this.p3, this.p4, this.p5);
+  Tuple5Parser(this.p1, this.p2, this.p3, this.p4, this.p5) {
+    label = [p1, p2, p3, p4, p5].map(_quote).join(' ~ ');
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -245,7 +253,7 @@ class Tuple5Parser<E1, E2, E3, E4, E5>
   }
 
   @override
-  Tuple1<Tuple5<E1, E2, E3, E4, E5>>? parse(ParseState state) {
+  Tuple1<Tuple5<E1, E2, E3, E4, E5>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p1.parse(state);
@@ -292,10 +300,12 @@ class Tuple6Parser<E1, E2, E3, E4, E5, E6>
 
   final Parser<E6> p6;
 
-  Tuple6Parser(this.p1, this.p2, this.p3, this.p4, this.p5, this.p6);
+  Tuple6Parser(this.p1, this.p2, this.p3, this.p4, this.p5, this.p6) {
+    label = [p1, p2, p3, p4, p5, p6].map(_quote).join(' ~ ');
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -318,7 +328,7 @@ class Tuple6Parser<E1, E2, E3, E4, E5, E6>
   }
 
   @override
-  Tuple1<Tuple6<E1, E2, E3, E4, E5, E6>>? parse(ParseState state) {
+  Tuple1<Tuple6<E1, E2, E3, E4, E5, E6>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p1.parse(state);
@@ -370,10 +380,12 @@ class Tuple7Parser<E1, E2, E3, E4, E5, E6, E7>
 
   final Parser<E7> p7;
 
-  Tuple7Parser(this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7);
+  Tuple7Parser(this.p1, this.p2, this.p3, this.p4, this.p5, this.p6, this.p7) {
+    label = [p1, p2, p3, p4, p5, p6, p7].map(_quote).join(' ~ ');
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -398,7 +410,7 @@ class Tuple7Parser<E1, E2, E3, E4, E5, E6, E7>
   }
 
   @override
-  Tuple1<Tuple7<E1, E2, E3, E4, E5, E6, E7>>? parse(ParseState state) {
+  Tuple1<Tuple7<E1, E2, E3, E4, E5, E6, E7>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p1.parse(state);

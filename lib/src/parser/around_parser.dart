@@ -18,10 +18,13 @@ class AroundParser<E1, E2> extends Parser<Tuple2<E1, E2>> {
 
   final Parser<E2> p3;
 
-  AroundParser(this.p1, this.p2, this.p3);
+  AroundParser(this.p1, this.p2, this.p3) {
+    label = 'around(' + [p1, p2, p3].map(_quote).join(' ') + ')';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -38,7 +41,7 @@ class AroundParser<E1, E2> extends Parser<Tuple2<E1, E2>> {
   }
 
   @override
-  Tuple1<Tuple2<E1, E2>>? parse(ParseState state) {
+  Tuple1<Tuple2<E1, E2>>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p1.parse(state);

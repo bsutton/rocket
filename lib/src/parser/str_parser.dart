@@ -22,11 +22,16 @@ class StrParser extends Parser<String> {
     }
 
     _c = s.codeUnitAt(0);
+    var str = s;
+    str = str.replaceAll('\r', '\\r');
+    str = str.replaceAll('\n', '\\n');
+    str = str.replaceAll('\t', '\\t');
+    label = 'str($str)';
   }
 
   @override
   @inline
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     if (state.ch == _c) {
       if (state.source.startsWith(s, state.pos)) {
         state.pos += s.length;
@@ -40,7 +45,7 @@ class StrParser extends Parser<String> {
 
   @override
   @inline
-  Tuple1<String>? parse(ParseState state) {
+  Tuple1<String>? handleParse(ParseState state) {
     if (state.ch == _c) {
       if (state.source.startsWith(s, state.pos)) {
         state.pos += s.length;

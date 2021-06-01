@@ -13,7 +13,7 @@ class DigitParser extends Parser<int> {
   final _tab = List<Tuple1<int>>.generate(10, (i) => Tuple1(i));
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c >= 0x30 && c <= 0x39) {
       state.nextChar();
@@ -21,6 +21,15 @@ class DigitParser extends Parser<int> {
     }
 
     return false;
+  }
+
+  @override
+  Tuple1<int>? handleParse(ParseState state) {
+    final c = state.ch;
+    if (c >= 0x30 && c <= 0x39) {
+      state.nextChar();
+      return _tab[c - 0x30];
+    }
   }
 
   @override
@@ -84,15 +93,6 @@ class DigitParser extends Parser<int> {
       }
 
       return true;
-    }
-  }
-
-  @override
-  Tuple1<int>? parse(ParseState state) {
-    final c = state.ch;
-    if (c >= 0x30 && c <= 0x39) {
-      state.nextChar();
-      return _tab[c - 0x30];
     }
   }
 

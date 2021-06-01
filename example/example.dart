@@ -69,13 +69,13 @@ class _Array extends BetweenParser {
 
 class _Chars extends Parser<List<int>> {
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     parse(state);
     return true;
   }
 
   @override
-  Tuple1<List<int>>? parse(ParseState state) {
+  Tuple1<List<int>>? handleParse(ParseState state) {
     final list = <int>[];
     int ch = 0;
     int pos = 0;
@@ -221,10 +221,10 @@ class _Number extends Parser<num> {
   static final _zero = char($0);
 
   @override
-  bool fastParse(ParseState state) => parse(state) != null;
+  bool handleFastParse(ParseState state) => handleParse(state) != null;
 
   @override
-  Tuple1<num>? parse(ParseState state) {
+  Tuple1<num>? handleParse(ParseState state) {
     final r1 = _number.parse(state);
     if (r1 == null) {
       state.fail(expectedError('number'), state.pos);
@@ -243,10 +243,10 @@ class _Object extends Parser<Map<String, dynamic>> {
   _Object() : p = between(_openBrace, _members, _closeBrace);
 
   @override
-  bool fastParse(ParseState state) => p.fastParse(state);
+  bool handleFastParse(ParseState state) => p.fastParse(state);
 
   @override
-  Tuple1<Map<String, dynamic>>? parse(ParseState state) {
+  Tuple1<Map<String, dynamic>>? handleParse(ParseState state) {
     final r1 = p.parse(state);
     if (r1 != null) {
       final v1 = r1.$0;
@@ -273,10 +273,10 @@ class _Ref<E> extends Parser<E> {
   Parser<E> p = DummyParser();
 
   @override
-  bool fastParse(ParseState state) => p.fastParse(state);
+  bool handleFastParse(ParseState state) => p.fastParse(state);
 
   @override
-  Tuple1<E>? parse(ParseState state) => p.parse(state);
+  Tuple1<E>? handleParse(ParseState state) => p.parse(state);
 }
 
 class _String extends Parser<String> {
@@ -286,7 +286,7 @@ class _String extends Parser<String> {
       : chars = BetweenParser(char($quote), _chars, seq2(char($quote), _white));
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final r1 = chars.parse(state);
     if (r1 == null) {
       state.fail(expectedError('string'), state.pos);
@@ -297,7 +297,7 @@ class _String extends Parser<String> {
   }
 
   @override
-  Tuple1<String>? parse(ParseState state) {
+  Tuple1<String>? handleParse(ParseState state) {
     final r1 = chars.parse(state);
     if (r1 == null) {
       state.fail(expectedError('string'), state.pos);
@@ -324,7 +324,7 @@ class _Term<E> extends Parser<E> {
         res = Tuple1(v);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     if (p.fastParse(state)) {
       white.fastParse(state);
       return true;
@@ -335,7 +335,7 @@ class _Term<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? parse(ParseState state) {
+  Tuple1<E>? handleParse(ParseState state) {
     if (p.fastParse(state)) {
       white.fastParse(state);
       return res;
@@ -362,7 +362,7 @@ class _White extends Parser {
       AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     while (true) {
       final c = state.ch;
       if (m.match(c)) {
@@ -375,7 +375,7 @@ class _White extends Parser {
   }
 
   @override
-  Tuple1? parse(ParseState state) {
+  Tuple1? handleParse(ParseState state) {
     while (true) {
       final c = state.ch;
       if (m.match(c)) {

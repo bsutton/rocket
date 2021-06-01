@@ -3,7 +3,7 @@ part of '../../parser.dart';
 /// Creates the [OptParser] parser.
 OptParser<E> opt<E>(Parser<E> p) => OptParser(p);
 
-/// The [ValParser] invokes [p] and parses successfully.
+/// The [OptParser] invokes [p] and parses successfully.
 ///
 /// Returns the result of pasing [p] or [null].
 /// ```dart
@@ -12,16 +12,19 @@ OptParser<E> opt<E>(Parser<E> p) => OptParser(p);
 class OptParser<E> extends Parser<E?> {
   final Parser<E> p;
 
-  OptParser(this.p);
+  OptParser(this.p) {
+    label = _quote(p) + '?';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     p.fastParse(state);
     return true;
   }
 
   @override
-  Tuple1<E?>? parse(ParseState state) {
+  Tuple1<E?>? handleParse(ParseState state) {
     final r1 = p.parse(state);
     if (r1 == null) {
       return Tuple1<E?>(null);

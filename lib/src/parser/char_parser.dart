@@ -14,10 +14,13 @@ class CharParser extends Parser<int> {
 
   final Tuple1<int> _res;
 
-  CharParser(this.c) : _res = Tuple1(c);
+  CharParser(this.c) : _res = Tuple1(c) {
+    label = '[0x${c.toRadixString(16)}]';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     if (state.ch == c) {
       state.nextChar();
       return true;
@@ -27,7 +30,7 @@ class CharParser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     if (state.ch == c) {
       state.nextChar();
       return _res;

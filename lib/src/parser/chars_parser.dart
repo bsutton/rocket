@@ -39,7 +39,7 @@ class Chars2Parser extends Parser<int> {
   Chars2Parser(this.c1, this.c2);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2) {
       state.nextChar();
@@ -50,7 +50,7 @@ class Chars2Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2) {
       state.nextChar();
@@ -75,7 +75,7 @@ class Chars3Parser extends Parser<int> {
   Chars3Parser(this.c1, this.c2, this.c3);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3) {
       state.nextChar();
@@ -86,7 +86,7 @@ class Chars3Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3) {
       state.nextChar();
@@ -114,7 +114,7 @@ class Chars4Parser extends Parser<int> {
   Chars4Parser(this.c1, this.c2, this.c3, this.c4);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3 || c == c4) {
       state.nextChar();
@@ -125,7 +125,7 @@ class Chars4Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3 || c == c4) {
       state.nextChar();
@@ -155,7 +155,7 @@ class Chars5Parser extends Parser<int> {
   Chars5Parser(this.c1, this.c2, this.c3, this.c4, this.c5);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3 || c == c4 || c == c5) {
       state.nextChar();
@@ -166,7 +166,7 @@ class Chars5Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3 || c == c4 || c == c5) {
       state.nextChar();
@@ -198,7 +198,7 @@ class Chars6Parser extends Parser<int> {
   Chars6Parser(this.c1, this.c2, this.c3, this.c4, this.c5, this.c6);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3 || c == c4 || c == c5 || c == c6) {
       state.nextChar();
@@ -209,7 +209,7 @@ class Chars6Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if (c == c1 || c == c2 || c == c3 || c == c4 || c == c5 || c == c6) {
       state.nextChar();
@@ -243,7 +243,7 @@ class Chars7Parser extends Parser<int> {
   Chars7Parser(this.c1, this.c2, this.c3, this.c4, this.c5, this.c6, this.c7);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c == c1 ||
         c == c2 ||
@@ -260,7 +260,7 @@ class Chars7Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if (c == c1 ||
         c == c2 ||
@@ -305,7 +305,7 @@ class CharsParser extends Parser<int> {
   SkipManyParser get skipMany => _CharsSkipManyParser(this, _cs, _maxChar);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c <= _maxChar) {
       for (var i = 0; i < _cs.length; i++) {
@@ -320,7 +320,7 @@ class CharsParser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final ch = state.ch;
     if (ch <= _maxChar) {
       for (var i = 0; i < _cs.length; i++) {
@@ -341,7 +341,7 @@ class _CharsSkipManyParser extends SkipManyParser {
   _CharsSkipManyParser(CharsParser p, this._cs, this._maxChar) : super(p);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     while (true) {
       final c = state.ch;
       if (c <= _maxChar) {
@@ -358,7 +358,7 @@ class _CharsSkipManyParser extends SkipManyParser {
   }
 
   @override
-  Tuple1? parse(ParseState state) {
+  Tuple1? handleParse(ParseState state) {
     while (true) {
       final c = state.ch;
       if (c <= _maxChar) {

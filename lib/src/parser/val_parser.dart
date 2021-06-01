@@ -17,13 +17,15 @@ class ValParser<E> extends Parser<E> {
 
   final Tuple1<E> _res;
 
-  ValParser(this.p, this.val) : _res = Tuple1(val);
+  ValParser(this.p, this.val) : _res = Tuple1(val) {
+    label = 'va;($p, $val)';
+  }
 
   @override
-  bool fastParse(ParseState state) => p.fastParse(state);
+  bool handleFastParse(ParseState state) => p.fastParse(state);
 
   @override
-  Tuple1<E>? parse(ParseState state) => p.fastParse(state) ? _res : null;
+  Tuple1<E>? handleParse(ParseState state) => p.fastParse(state) ? _res : null;
 }
 
 extension ValParserExt on Parser {

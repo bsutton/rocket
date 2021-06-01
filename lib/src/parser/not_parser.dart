@@ -17,10 +17,12 @@ NotParser not(Parser p) => NotParser(p);
 class NotParser extends Parser {
   final Parser p;
 
-  NotParser(this.p);
+  NotParser(this.p) {
+    label = '!' + _quote(p);
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p.fastParse(state);
@@ -34,7 +36,7 @@ class NotParser extends Parser {
   }
 
   @override
-  Tuple1? parse(ParseState state) {
+  Tuple1? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p.fastParse(state);

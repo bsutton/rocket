@@ -7,13 +7,16 @@ class SepByParser<E> extends Parser<List<E>> {
 
   final Parser sep;
 
-  SepByParser(this.p, this.sep);
+  SepByParser(this.p, this.sep) {
+    label = 'sepBy(' + [p, sep].map(_quote).join(' ') + ')';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) => p.fastParseSepBy(state, sep);
+  bool handleFastParse(ParseState state) => p.fastParseSepBy(state, sep);
 
   @override
-  Tuple1<List<E>>? parse(ParseState state) => p.parseSepBy(state, sep);
+  Tuple1<List<E>>? handleParse(ParseState state) => p.parseSepBy(state, sep);
 }
 
 extension SepByParserExt<E> on Parser<E> {

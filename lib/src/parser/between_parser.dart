@@ -18,10 +18,12 @@ class BetweenParser<E> extends Parser<E> {
 
   final Parser p3;
 
-  BetweenParser(this.p1, this.p2, this.p3);
+  BetweenParser(this.p1, this.p2, this.p3) {
+    label = 'between(' + [p1, p2, p3].map(_quote).join(' ') + ')';
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {
@@ -38,7 +40,7 @@ class BetweenParser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? parse(ParseState state) {
+  Tuple1<E>? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     if (p1.fastParse(state)) {

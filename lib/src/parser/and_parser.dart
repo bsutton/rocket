@@ -17,10 +17,13 @@ AndParser and(Parser p) => AndParser(p);
 class AndParser extends Parser {
   final Parser p;
 
-  AndParser(this.p);
+  AndParser(this.p) {
+    label = '&' + _quote(p);
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p.fastParse(state);
@@ -34,7 +37,7 @@ class AndParser extends Parser {
   }
 
   @override
-  Tuple1? parse(ParseState state) {
+  Tuple1? handleParse(ParseState state) {
     final ch = state.ch;
     final pos = state.pos;
     final r1 = p.fastParse(state);

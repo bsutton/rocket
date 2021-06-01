@@ -2,21 +2,35 @@ part of '../../parser.dart';
 
 const inline = pragma('vm:prefer-inline');
 
+String _quote(Parser p) {
+  if (p.quote) {
+    return '($p)';
+  }
+
+  return '$p';
+}
+
 /// The [DummyParser] is parser that doesn't parse anything and is used as a
 /// temporary stub when defining recursive parsers.
 class DummyParser<E> extends Parser<E> {
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     throw UnsupportedError('fastParse');
   }
 
   @override
-  Tuple1<E>? parse(ParseState state) {
+  Tuple1<E>? handleParse(ParseState state) {
     throw UnsupportedError('parse');
   }
 }
 
 abstract class Parser<E> {
+  static ParseTracer? tracer;
+
+  bool quote = true;
+
+  String label = '';
+
   /// Parses input data passively, with minimal consumption of system resources
   /// during parsing.
   ///
@@ -26,7 +40,17 @@ abstract class Parser<E> {
   ///   state.fail(err, state.pos);
   /// }
   /// ```
-  bool fastParse(ParseState state);
+  bool fastParse(ParseState state) {
+    final t = tracer;
+    if (t == null) {
+      return handleFastParse(state);
+    } else {
+      t.enterFast(this, state);
+      final r1 = handleFastParse(state);
+      t.leaveFast(this, state, r1);
+      return r1;
+    }
+  }
 
   @experimental
   bool fastParseMany(ParseState state) {
@@ -74,6 +98,15 @@ abstract class Parser<E> {
   }
 
   @experimental
+  bool fastParseSkipMany(ParseState state) {
+    while (fastParse(state)) {
+      //
+    }
+
+    return true;
+  }
+
+  @experimental
   bool fastParseSkipMany1(ParseState state) {
     if (!fastParse(state)) {
       return false;
@@ -86,14 +119,9 @@ abstract class Parser<E> {
     return true;
   }
 
-  @experimental
-  bool fastParseSkipMany(ParseState state) {
-    while (fastParse(state)) {
-      //
-    }
+  bool handleFastParse(ParseState state);
 
-    return true;
-  }
+  Tuple1<E>? handleParse(ParseState state);
 
   /// Parses input data actively and produces the result.
   ///
@@ -102,7 +130,17 @@ abstract class Parser<E> {
   /// ```
   /// final r1 = p.parse(state);
   /// ```
-  Tuple1<E>? parse(ParseState state);
+  Tuple1<E>? parse(ParseState state) {
+    final t = tracer;
+    if (t == null) {
+      return handleParse(state);
+    } else {
+      t.enter(this, state);
+      final r1 = handleParse(state);
+      t.leave(this, state, r1);
+      return r1;
+    }
+  }
 
   @experimental
   Tuple1<List<E>>? parseMany(ParseState state) {
@@ -189,4 +227,34 @@ abstract class Parser<E> {
 
     return const Tuple1(null);
   }
+
+  @override
+  String toString() {
+    if (label.isNotEmpty) {
+      return label;
+    }
+
+    var name = '$runtimeType';
+    final index = name.indexOf('<');
+    if (index != -1) {
+      name = name.substring(0, index);
+    }
+
+    if (name.endsWith('Parser')) {
+      name = name.substring(0, name.length - 6);
+    }
+
+    name = name[0].toLowerCase() + name.substring(1);
+    return name;
+  }
+}
+
+abstract class ParseTracer {
+  void enter<E>(Parser<E> parser, ParseState state);
+
+  void enterFast<E>(Parser<E> parser, ParseState state);
+
+  void leave<E>(Parser<E> parser, ParseState state, Tuple1<E>? result);
+
+  void leaveFast<E>(Parser<E> parser, ParseState state, bool result);
 }

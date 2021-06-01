@@ -1,5 +1,7 @@
 part of '../../parser.dart';
 
+RangesParser ranges(List<Range> rs) => RangesParser(rs);
+
 Ranges1Parser ranges1(Range r1) => Ranges1Parser(r1);
 
 Ranges2Parser ranges2(Range r1, Range r2) => Ranges2Parser(r1, r2);
@@ -17,8 +19,6 @@ Ranges6Parser ranges6(
         Range r1, Range r2, Range r3, Range r4, Range r5, Range r6) =>
     Ranges6Parser(r1, r2, r3, r4, r5, r6);
 
-RangesParser ranges(List<Range> rs) => RangesParser(rs);
-
 class Ranges1Parser extends Parser<int> {
   final int v1;
 
@@ -28,8 +28,10 @@ class Ranges1Parser extends Parser<int> {
       : v1 = r1.start,
         v2 = r1.end;
 
+  ManyParser<int> get many => _Range1ManyParser(this, Range(v1, v2));
+
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if (c >= v1 && c <= v2) {
       state.nextChar();
@@ -39,10 +41,8 @@ class Ranges1Parser extends Parser<int> {
     return false;
   }
 
-  ManyParser<int> get many => _Range1ManyParser(this, Range(v1, v2));
-
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if (c >= v1 && c <= v2) {
       state.nextChar();
@@ -69,7 +69,7 @@ class Ranges2Parser extends Parser<int> {
   }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v4) && (c <= v2 || c >= v3)) {
       state.nextChar();
@@ -80,7 +80,7 @@ class Ranges2Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v4) && (c <= v2 || c >= v3)) {
       state.nextChar();
@@ -113,7 +113,7 @@ class Ranges3Parser extends Parser<int> {
   }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v6) && (c <= v2 || c >= v5) || (c >= v3 && c <= v4)) {
       state.nextChar();
@@ -124,7 +124,7 @@ class Ranges3Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v6) && (c <= v2 || c >= v5) || (c >= v3 && c <= v4)) {
       state.nextChar();
@@ -163,7 +163,7 @@ class Ranges4Parser extends Parser<int> {
   }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v8) && (c <= v2 && c >= v7) ||
         (c >= v3 && c <= v6) && (c <= v4 && c >= v5)) {
@@ -175,7 +175,7 @@ class Ranges4Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v8) && (c <= v2 && c >= v7) ||
         (c >= v3 && c <= v6) && (c <= v4 && c >= v5)) {
@@ -221,7 +221,7 @@ class Ranges5Parser extends Parser<int> {
   }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v10) && (c <= v2 && c >= v9) ||
         (c >= v3 && c <= v8) && (c <= v4 && c >= v7) ||
@@ -234,7 +234,7 @@ class Ranges5Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v10) && (c <= v2 && c >= v9) ||
         (c >= v3 && c <= v8) && (c <= v4 && c >= v7) ||
@@ -287,7 +287,7 @@ class Ranges6Parser extends Parser<int> {
   }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v12) && (c <= v2 && c >= v11) ||
         (c >= v3 && c <= v10) && (c <= v4 && c >= v9) ||
@@ -300,7 +300,7 @@ class Ranges6Parser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     if ((c >= v1 && c <= v12) && (c <= v2 && c >= v11) ||
         (c >= v3 && c <= v10) && (c <= v4 && c >= v9) ||
@@ -334,7 +334,7 @@ class RangesParser extends Parser<int> {
   }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     final ch = state.ch;
     for (var i = 0; i < _rs.length; i += 2) {
       if (_rs[i] <= ch) {
@@ -351,7 +351,7 @@ class RangesParser extends Parser<int> {
   }
 
   @override
-  Tuple1<int>? parse(ParseState state) {
+  Tuple1<int>? handleParse(ParseState state) {
     final c = state.ch;
     for (var i = 0; i < _rs.length; i += 2) {
       if (_rs[i] <= c) {
@@ -377,7 +377,7 @@ class _Range1ManyParser extends ManyParser<int> {
         super(p);
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     while (true) {
       final c = state.ch;
       if (c >= v1 && c <= v2) {
@@ -390,7 +390,7 @@ class _Range1ManyParser extends ManyParser<int> {
   }
 
   @override
-  Tuple1<List<int>>? parse(ParseState state) {
+  Tuple1<List<int>>? handleParse(ParseState state) {
     final list = <int>[];
     while (true) {
       final c = state.ch;

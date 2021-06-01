@@ -16,16 +16,18 @@ OrFailParser<E> orFail<E>(Parser<E> p, err) => OrFailParser(p, err);
 class FailParser<E> extends Parser<E> {
   final dynamic err;
 
-  FailParser(this.err);
+  FailParser(this.err) {
+    label = 'fail($err)';
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     state.fail(err, state.pos);
     return false;
   }
 
   @override
-  Tuple1<E>? parse(ParseState state) {
+  Tuple1<E>? handleParse(ParseState state) {
     state.fail(err, state.pos);
   }
 }
@@ -43,10 +45,12 @@ class OrFailParser<E> extends Parser<E> {
 
   Parser<E> p;
 
-  OrFailParser(this.p, this.err);
+  OrFailParser(this.p, this.err) {
+    label = 'orFail($p, $err)';
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     if (p.fastParse(state)) {
       return true;
     }
@@ -56,7 +60,7 @@ class OrFailParser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? parse(ParseState state) {
+  Tuple1<E>? handleParse(ParseState state) {
     final r1 = p.parse(state);
     if (r1 != null) {
       return r1;

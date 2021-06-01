@@ -18,6 +18,9 @@ abstract class ParseError {
   String get element;
 
   String get key;
+
+  @override
+  String toString() => '$key: \'$element\'';
 }
 
 class UnexpectedError extends ParseError {

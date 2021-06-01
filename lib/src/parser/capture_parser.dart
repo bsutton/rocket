@@ -13,10 +13,13 @@ CaptureParser capture(Parser p) => CaptureParser(p);
 class CaptureParser extends Parser<String> {
   final Parser p;
 
-  CaptureParser(this.p);
+  CaptureParser(this.p) {
+    label = '<' + _quote(p) + '>';
+    quote = false;
+  }
 
   @override
-  bool fastParse(ParseState state) {
+  bool handleFastParse(ParseState state) {
     if (p.fastParse(state)) {
       return true;
     }
@@ -25,7 +28,7 @@ class CaptureParser extends Parser<String> {
   }
 
   @override
-  Tuple1<String>? parse(ParseState state) {
+  Tuple1<String>? handleParse(ParseState state) {
     final start = state.pos;
     if (p.fastParse(state)) {
       final result = state.source.substring(start, state.pos);

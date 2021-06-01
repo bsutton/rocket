@@ -6,6 +6,8 @@ Rocket is a parsing framework for parsing using efficient parsing algorithms.
 
 The Rocket is a professional developers framework.  
 The Rocket is a framework for the rapid development of fast parsers.  
+Simple, convenient and fully customizable process of tracking the parsing process (allows you to track  complete, successful, or unsuccessful parsing, parsing of individual parsers, with fully customizable information output) and setting the conditional breakpoints (by position, by symbol, by the name of the parser, and so on).
+Convenient automatic and manual assignment of labels (names) for parsers to increase the visibility of the process of tracking and debugging.
 Implement something properly once and reuse it everywhere.  
 Parse data as efficiently as possible.  
 Use the capabilities of the framework in combination with your own parsers.  
@@ -23,11 +25,18 @@ Use parsers to quickly implement efficient data validators.
 
 ### What is a parser
 
-A parser is an abstract class called `Parser` that contains two methods. One method for active parsing and one for passive parsing.
+A parser is an abstract class called `Parser` that contains several methods. Some methods for active parsing, others for passive parsing.
+
+```dart
+bool handleFastParse(ParseState state);
+Tuple1<E>? handleParse(ParseState state);
+```
+
+These methods should not be used directly as they are called by other general methods.  
+General methods are used for direct parsing. There are also two of them.  
 
 ```dart
 bool fastParse(ParseState state);
-
 Tuple1<E>? parse(ParseState state);
 ```
 
@@ -141,52 +150,6 @@ Test it if possible.
 This will be your own parser.  
 And it doesn't matter that you copied it. This is your own parser, created by you.  
 
-### How to extend a parser
-
-When developing a complex combination of parsers (for example, for a complex grammar), it is often easier to extend an existing universal parser. Instead of writing it from scratch.  
-
-For example, you need to parse a certain sequence, separated by some kind of separator.  
-For this purpose, you can extend the `SepByParser` parser.  
-
-```dart
-class _Values extends SepByParser {
-  _Values() : super(_value, _comma);
-}
-```
-
-How it will works?  
-The `SepByParser` parser is defined as follows:  
-
-```dart
-class SepByParser<E> extends Parser<List<E>> {
-  final Parser<E> p;
-
-  final Parser sep;
-
-  SepByParser(this.p, this.sep);
-}
-```
-
-Thus, by extending this parser, your parser inherits all the functionality of the `SepByParser` parser.  
-Thus, the definition of this constructor already implies that your parser will work similarly to the `SepByParser` parser.  
-
-
-```dart
-_Values() : super(_value, _comma);
-```
-
-Quite reasonably, the question arises: But why extend it if nothing changes in principle?  
-Yes, nothing changes, but nothing worsens.  
-Additional benefits are as follows:
-
-- Increased visibility
-- Debugging process is simplified (because this is a specific parser)
-- Your parser follows `Single-responsibility principle`
-
-Of course, it is possible to create a combination of parsers for complex grammar using only the principle of simple combinations. It's a matter of taste.
-But debugging such a combination will not be easy.  
-These parsers will not have their own face.  
-
 ### How the error reporting system works
 
 To begin with, what are the types of error messages.  
@@ -215,12 +178,6 @@ abstract class ParseError {
 Examples of generating error messages:
 
 ```dart
-class _Comma extends OrFailParser {
-  _Comma() : super(seq2(char($comma), _white), expectedError(','));
-}
-```
-
-```dart
 str('Hello').orFail(expectedError('Hello'));
 ```
 
@@ -232,6 +189,35 @@ if (r == null) {
 ```
 
 By default, no error messages are generated (unless otherwise noted) for performance reasons.
+
+### How to trace
+
+There is built-in support for this.  
+When the generic parse method is called, this method checks to see if tracer is connected.  
+If the tracer is connected, then the tracking handlers are called.  
+These handlers are defined in the `ParseTraces` interface class.  
+
+```dart
+abstract class ParseTracer {
+  void enter<E>(Parser<E> parser, ParseState state);
+
+  void enterFast<E>(Parser<E> parser, ParseState state);
+
+  void leave<E>(Parser<E> parser, ParseState state, Tuple1<E>? result);
+
+  void leaveFast<E>(Parser<E> parser, ParseState state, bool result);
+}
+```
+
+This allows the developer to fully track the parsing process.  
+This means only one thing. This is a simple, convenient and fully customizable tracking of the parsing process.  
+Tracking complete, successful or unsuccessful parsing, parsing of individual parsers.  
+Fully customizable output.  
+Setting conditional breakpoints (by position, by symbol, by parser name, etc.).  
+
+Implement your own tracer and track whatever you need.  
+An example of the simplest tracer can be found in the file: 
+
 
 ### Performance
 

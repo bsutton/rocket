@@ -1,5 +1,4 @@
 import 'package:charcode/ascii.dart';
-import 'package:rocket/matcher.dart';
 import 'package:rocket/parse.dart';
 import 'package:rocket/parse_error.dart';
 
@@ -22,26 +21,28 @@ final _chars = _Chars().as('chars');
 
 final _white = _White().as('white');
 
+final _ws = _WS();
+
 Parser _createParser() {
-  final _closeBrace = tokChar($close_brace, '}', null, _white);
+  final _closeBrace = tokChar($close_brace, '}', null, _ws);
 
-  final _closeBracket = tokChar($close_bracket, ']', null, _white);
+  final _closeBracket = tokChar($close_bracket, ']', null, _ws);
 
-  final _colon = tokChar($colon, ':', null, _white);
+  final _colon = tokChar($colon, ':', null, _ws);
 
   final _eof = not(anyChar()).expected('end of file').as('end of file');
 
-  final _comma = tokChar($comma, ',', null, _white);
+  final _comma = tokChar($comma, ',', null, _ws);
 
-  final _false = _Term('false', false).orFail(expectedError('false'));
+  final _false = tokStr('false', 'false', false, _ws);
 
-  final _null = _Term('null', null).orFail(expectedError('null'));
+  final _null = tokStr('null', 'null', null, _ws);
 
-  final _openBrace = tokChar($open_brace, '{', null, _white);
+  final _openBrace = tokChar($open_brace, '{', null, _ws);
 
-  final _openBracket = tokChar($open_bracket, '[', null, _white);
+  final _openBracket = tokChar($open_bracket, '[', null, _ws);
 
-  final _true = _Term('true', true).orFail(expectedError('true'));
+  final _true = tokStr('true', 'true', true, _ws);
 
   final _string = _String().as('string');
 
@@ -158,28 +159,30 @@ class _Chars extends Parser<List<int>> {
 }
 
 class _Number extends Parser<num> {
-  static final _digit = digit();
+  static final _digit = digit().as('[0-9]');
 
-  static final _digit19 = ranges1(Range($1, $9));
+  static final _digit19 = ranges1(Range($1, $9)).as('[1-9]');
 
-  static final _dot = char($dot);
+  static final _dot = char($dot).as('.');
 
-  static final _eE = chars2($e, $E);
+  static final _eE = chars2($e, $E).as('e | E');
 
-  static final _exp = seq3(_eE, _signs.opt, _digit.skipMany1);
+  static final _exp = seq3(_eE, _signs.opt, _digit.skipMany1).as('exp');
 
-  static final _frac = seq2(_dot, _digit.skipMany1);
+  static final _frac = seq2(_dot, _digit.skipMany1).as('frac');
 
-  static final _integer = choice2(_zero, seq2(_digit19, _digit.skipMany));
+  static final _integer =
+      choice2(_zero, seq2(_digit19, _digit.skipMany)).as('integer');
 
-  static final _minus = char($minus);
+  static final _minus = char($minus).as('minus');
 
   static final _number =
-      left(seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture, _white);
+      left(seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture, _white)
+          .as('_number');
 
-  static final _signs = chars2($plus, $minus);
+  static final _signs = chars2($plus, $minus).as('signs');
 
-  static final _zero = char($0);
+  static final _zero = char($0).as('zero');
 
   @override
   bool handleFastParse(ParseState state) => handleParse(state) != null;
@@ -212,67 +215,13 @@ class _ObjectMapper
   }
 }
 
-class _ParseTracer extends ParseTracer {
-  int _indent = 0;
-
-  @override
-  void enter<E>(Parser<E> parser, ParseState state) {
-    _trace(parser, state, true);
-  }
-
-  @override
-  void enterFast<E>(Parser<E> parser, ParseState state) {
-    _trace(parser, state, true);
-  }
-
-  @override
-  void leave<E>(Parser<E> parser, ParseState state, Tuple1<E>? result) {
-    _trace(parser, state, false, result);
-  }
-
-  @override
-  void leaveFast<E>(Parser<E> parser, ParseState state, bool result) {
-    _trace(parser, state, false, result);
-  }
-
-  void _trace(Parser parser, ParseState state, bool enter, [result]) {
-    final pos = state.pos;
-    final source = state.source;
-    final sink = StringBuffer();
-    if (!enter) {
-      _indent -= 2;
-    }
-
-    sink.write(' ' * _indent);
-    sink.write(enter ? '>> ' : '<< ');
-    sink.write(parser);
-    sink.write(': pos ');
-    sink.write(pos);
-    if (!enter) {
-      sink.write(', RESULT: ');
-      sink.write(result);
-    }
-
-    sink.writeln();
-    sink.write(' ' * _indent);
-    var length = source.length - pos;
-    length = length < 48 ? length : 48;
-    var text = state.source.substring(pos, pos + length);
-    text = text.replaceAll('\n', '\\n');
-    text = text.replaceAll('\r', '\\r');
-    sink.write(text);
-    print(sink);
-    if (enter) {
-      _indent += 2;
-    }
-  }
-}
-
 class _String extends Parser<String> {
-  final BetweenParser<List<int>> chars;
+  final Parser<List<int>> chars;
 
   _String()
-      : chars = BetweenParser(char($quote), _chars, seq2(char($quote), _white));
+      : chars = BetweenParser(char($quote).as('open_quote'), _chars,
+                seq2(char($quote), _white).as('close_quote'))
+            .as('chars');
 
   @override
   bool handleFastParse(ParseState state) {
@@ -296,41 +245,6 @@ class _String extends Parser<String> {
     final v1 = r1.$0;
     final v2 = String.fromCharCodes(v1);
     return Tuple1(v2);
-  }
-}
-
-class _Term<E> extends Parser<E> {
-  final String name;
-
-  final Parser p;
-
-  final Tuple1<E> _res;
-
-  final Parser white = _white;
-
-  _Term(this.name, E val)
-      : p = str(name),
-        _res = Tuple1(val);
-
-  @override
-  bool handleFastParse(ParseState state) {
-    if (p.fastParse(state)) {
-      white.fastParse(state);
-      return true;
-    }
-
-    state.fail(expectedError(name), state.pos);
-    return false;
-  }
-
-  @override
-  Tuple1<E>? handleParse(ParseState state) {
-    if (p.fastParse(state)) {
-      white.fastParse(state);
-      return _res;
-    }
-
-    state.fail(expectedError(name), state.pos);
   }
 }
 
@@ -361,6 +275,23 @@ class _White extends Parser {
       }
 
       return const Tuple1(null);
+    }
+  }
+}
+
+class _WS implements Skipper {
+  final Matcher<int> _m =
+      AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
+
+  @override
+  void skip(ParseState state) {
+    while (true) {
+      if (_m.match(state.ch)) {
+        state.nextChar();
+        continue;
+      }
+
+      break;
     }
   }
 }

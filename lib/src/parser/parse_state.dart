@@ -40,7 +40,8 @@ class ParseState {
       final keys = parseErrors.map((e) => e.key).toSet();
       for (final key in keys) {
         final elements = parseErrors.where((e) => e.key == key);
-        final quoted = elements.map((e) => '\'${e.element}\'');
+        final quoted = elements.map((e) => '\'${e.element}\'').toList();
+        quoted.sort();
         sink.write(key);
         sink.write(': ');
         sink.write(quoted.join(', '));

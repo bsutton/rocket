@@ -7,11 +7,14 @@ import 'mapper.dart';
 import 'parse.dart';
 import 'parse_error.dart';
 import 'range.dart';
+import 'skipper.dart';
 import 'tuple.dart';
 
 export 'mapper.dart';
+export 'matcher.dart';
 export 'parse_error.dart';
 export 'range.dart';
+export 'skipper.dart';
 export 'tuple.dart';
 
 part 'src/parser/and_parser.dart';
@@ -41,5 +44,7 @@ part 'src/parser/seq_parser.dart';
 part 'src/parser/skip_many_parser.dart';
 part 'src/parser/str_parser.dart';
 part 'src/parser/tok_char_parser.dart';
+part 'src/parser/tok_parser.dart';
+part 'src/parser/tok_str_parser.dart';
 part 'src/parser/tuple_parser.dart';
 part 'src/parser/val_parser.dart';

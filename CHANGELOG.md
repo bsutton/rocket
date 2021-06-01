@@ -3,6 +3,11 @@
 - Added parser `MapperParser`
 - Added parser `RefParser`
 - Added parser `TokCharParser`
+- Added parser `TokParser`
+- Added parser `TokStrParser`
+- Added `Skipper` functionality to skip input data (e.g. whitespaces) as quickly as possible
+- Added `ParseTracer` functionality for easy (configurable) tracking of the parsing process
+- Breaking change (to implement traceability): parsers must declare  methods `handleFastParse` and `handleParse`
 
 ## 0.1.7
 
@@ -11,7 +16,7 @@
 ## 0.1.6
 
 - API documentation process started
-- Breaking change, classes `RangeNParser` (where N indicates the number) renamed to `RangesNParser`
+- Breaking change: classes `RangeNParser` (where N indicates the number) renamed to `RangesNParser`
 - Added parser `MapParser`
 
 ## 0.1.5

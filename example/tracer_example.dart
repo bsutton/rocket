@@ -4,7 +4,7 @@ import 'json_parser.dart';
 
 void main() {
   Parser.tracer = _ParseTracer();
-  final text = ' {"a": 0}';
+  final text = ' {"a": false}';
   final p = parser;
   final r = p.tryParseString(text);
   print(r);

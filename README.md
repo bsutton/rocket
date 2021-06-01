@@ -1,13 +1,14 @@
 # rocket
 
-Version 0.1.8 (BETA)  
+Version 0.1.9 (BETA)  
 
 Rocket is a parsing framework for parsing using efficient parsing algorithms.
 
 The Rocket is a professional developers framework.  
 The Rocket is a framework for the rapid development of fast parsers.  
-Simple, convenient and fully customizable process of tracking the parsing process (allows you to track  complete, successful, or unsuccessful parsing, parsing of individual parsers, with fully customizable information output) and setting the conditional breakpoints (by position, by symbol, by the name of the parser, and so on).
-Convenient automatic and manual assignment of labels (names) for parsers to increase the visibility of the process of tracking and debugging.
+Simple, convenient and fully customizable process of tracking the parsing process (allows you to track  complete, successful, or unsuccessful parsing, parsing of individual parsers, with fully customizable information output) and setting the conditional breakpoints (by position, by symbol, by the name of the parser, and so on).  
+Convenient automatic and manual assignment of labels (names) for parsers to increase the visibility of the process of tracking and debugging.  
+Simple and convenient error system.  
 Implement something properly once and reuse it everywhere.  
 Parse data as efficiently as possible.  
 Use the capabilities of the framework in combination with your own parsers.  

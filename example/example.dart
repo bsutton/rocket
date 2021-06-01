@@ -214,12 +214,12 @@ class _ObjectMapper
 }
 
 class _String extends Parser<String> {
-  static final _quote = char($quote).as('open_quote');
+  static final _quote = char($quote).as('"');
 
   final Parser<List<int>> chars;
 
   _String()
-      : chars = between(_quote, _chars, tokChar($quote, '\'', null, _ws))
+      : chars = between(_quote, _chars, tokChar($quote, '"', null, _ws))
             .as('chars');
 
   @override

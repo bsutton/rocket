@@ -29,7 +29,10 @@ Use parsers to quickly implement efficient data validators.
 A parser is an abstract class called `Parser` that contains several methods. Some methods for active parsing, others for passive parsing.
 
 ```dart
+@protected
 bool handleFastParse(ParseState state);
+
+@protected
 Tuple1<E>? handleParse(ParseState state);
 ```
 
@@ -38,6 +41,7 @@ General methods are used for direct parsing. There are also two of them.
 
 ```dart
 bool fastParse(ParseState state);
+
 Tuple1<E>? parse(ParseState state);
 ```
 
@@ -91,7 +95,7 @@ E // Success
 Example of simple parsing. Simple parsing, in this case, means using a simple combination of parsers.
 
 ```dart
-final p1 = digit().skipMany.right(char($Z));
+final p1 = digit().skipMany1.right(char($Z));
 final v = p1.parseString('100Z');
 print(v); // Z (90)
 ```
@@ -100,14 +104,35 @@ In case of parsing error, an exception will be thrown.
 Since this is a simple parsing, the error message will not be descriptive.  
 It's the same as if you are using regular expressions. No message, just result or error.  
 
-In this case, it's better to use safe parsing.  
+But this can be solved very simply.
+
+```dart
+main(List<String> args) {
+  final _digits = digit().skipMany1.expected('digits');
+  final z = char($Z).expected('Z');
+  final p1 = _digits.right(z);
+  final v = p1.parseString('100');
+}
+```
+
+So, when parsing the string `100`, an exception will be thrown.  
+
+```
+Unhandled exception:
+FormatException: Expected: 'Z'
+ (at character 4)
+100
+   ^
+```
+
+Also you can to use safe parsing.  
 
 ```dart
 final p1 = digit().skipMany1.right(char($Z));
 final r = p1.tryParseString('Z');
-final v = r?.$0; // <= r.$0 is a result value
+final v = r?.$0;
 if (v != null) {
-  print(v);
+  print(v); // The data was parsed successfully
 }
 ```
 

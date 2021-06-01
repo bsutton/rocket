@@ -216,8 +216,8 @@ Fully customizable output.
 Setting conditional breakpoints (by position, by symbol, by parser name, etc.).  
 
 Implement your own tracer and track whatever you need.  
-An example of the simplest tracer can be found in the file: 
-
+An example of the simplest tracer can be found in the file:  
+https://github.com/mezoni/rocket/blob/main/example/tracer_example.dart
 
 ### Performance
 

@@ -53,6 +53,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   bool fastParseMany(ParseState state) {
     while (true) {
       if (!fastParse(state)) {
@@ -62,6 +63,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   bool fastParseMany1(ParseState state) {
     if (!fastParse(state)) {
       return false;
@@ -75,6 +77,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   bool fastParseSepBy(ParseState state, Parser sep) {
     if (!fastParse(state)) {
       return true;
@@ -98,6 +101,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   bool fastParseSkipMany(ParseState state) {
     while (fastParse(state)) {
       //
@@ -107,6 +111,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   bool fastParseSkipMany1(ParseState state) {
     if (!fastParse(state)) {
       return false;
@@ -119,8 +124,10 @@ abstract class Parser<E> {
     return true;
   }
 
+  @protected
   bool handleFastParse(ParseState state);
 
+  @protected
   Tuple1<E>? handleParse(ParseState state);
 
   /// Parses input data actively and produces the result.
@@ -143,6 +150,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   Tuple1<List<E>>? parseMany(ParseState state) {
     final r1 = parse(state);
     if (r1 == null) {
@@ -161,6 +169,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   Tuple1<List<E>>? parseMany1(ParseState state) {
     final r1 = parse(state);
     if (r1 == null) {
@@ -179,6 +188,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   Tuple1<List<E>>? parseSepBy(ParseState state, Parser sep) {
     final r1 = parse(state);
     if (r1 == null) {
@@ -207,6 +217,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   Tuple1? parseSkipMany(ParseState state) {
     while (fastParse(state)) {
       //
@@ -216,6 +227,7 @@ abstract class Parser<E> {
   }
 
   @experimental
+  @protected
   Tuple1? parseSkipMany1(ParseState state) {
     if (!fastParse(state)) {
       return null;

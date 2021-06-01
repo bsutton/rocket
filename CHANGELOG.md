@@ -1,3 +1,8 @@
+## 0.1.9
+
+- Minor cosmetic improvements in the `json_parser.dart` example file.
+- Added parser `WhiteParser`
+
 ## 0.1.8
 
 - Added parser `MapperParser`

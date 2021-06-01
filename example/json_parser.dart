@@ -19,8 +19,6 @@ final parser = _createParser();
 
 final _chars = _Chars().as('chars');
 
-final _white = _White().as('white');
-
 final _ws = _WS();
 
 Parser _createParser() {
@@ -30,7 +28,7 @@ Parser _createParser() {
 
   final _colon = tokChar($colon, ':', null, _ws);
 
-  final _eof = not(anyChar()).expected('end of file').as('end of file');
+  final _eof = tok(not(anyChar()), 'end of file', null, _ws);
 
   final _comma = tokChar($comma, ',', null, _ws);
 
@@ -65,7 +63,7 @@ Parser _createParser() {
   _value.p = choice7(_object, _array, _string, _number, _true, _false, _null)
       .as('value');
 
-  final _json = between(_white, _value, _eof).as('json');
+  final _json = between(white(_ws), _value, _eof).as('json');
 
   return _json;
 }
@@ -177,8 +175,7 @@ class _Number extends Parser<num> {
   static final _minus = char($minus).as('minus');
 
   static final _number =
-      left(seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture, _white)
-          .as('_number');
+      seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture.as('_number');
 
   static final _signs = chars2($plus, $minus).as('signs');
 
@@ -195,6 +192,7 @@ class _Number extends Parser<num> {
       return null;
     }
 
+    _ws.skip(state);
     final v1 = r1.$0;
     final v2 = parseNumber(v1);
     return Tuple1(v2);
@@ -216,11 +214,12 @@ class _ObjectMapper
 }
 
 class _String extends Parser<String> {
+  static final _quote = char($quote).as('open_quote');
+
   final Parser<List<int>> chars;
 
   _String()
-      : chars = BetweenParser(char($quote).as('open_quote'), _chars,
-                seq2(char($quote), _white).as('close_quote'))
+      : chars = between(_quote, _chars, tokChar($quote, '\'', null, _ws))
             .as('chars');
 
   @override
@@ -249,33 +248,16 @@ class _String extends Parser<String> {
 }
 
 class _White extends Parser {
-  final Matcher<int> m =
-      AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
-
   @override
   bool handleFastParse(ParseState state) {
-    while (true) {
-      final c = state.ch;
-      if (m.match(c)) {
-        state.nextChar();
-        continue;
-      }
-
-      return true;
-    }
+    _ws.skip(state);
+    return true;
   }
 
   @override
   Tuple1? handleParse(ParseState state) {
-    while (true) {
-      final c = state.ch;
-      if (m.match(c)) {
-        state.nextChar();
-        continue;
-      }
-
-      return const Tuple1(null);
-    }
+    _ws.skip(state);
+    return const Tuple1(null);
   }
 }
 
@@ -302,6 +284,4 @@ extension<E> on Parser<E> {
     quote = label.contains(' ');
     return this;
   }
-
-  Parser<E> expected(String msg) => this.orFail(expectedError(msg));
 }

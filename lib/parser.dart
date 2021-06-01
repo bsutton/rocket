@@ -48,3 +48,4 @@ part 'src/parser/tok_parser.dart';
 part 'src/parser/tok_str_parser.dart';
 part 'src/parser/tuple_parser.dart';
 part 'src/parser/val_parser.dart';
+part 'src/parser/white_parser.dart';

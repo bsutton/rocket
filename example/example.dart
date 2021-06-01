@@ -1,5 +1,4 @@
 import 'package:charcode/ascii.dart';
-import 'package:rocket/matcher.dart';
 import 'package:rocket/parse.dart';
 import 'package:rocket/parse_error.dart';
 
@@ -16,55 +15,57 @@ void main() {
   print(r);
 }
 
-final parser = () {
-  _value.p = choice7(_object, _array, _string, _number, _true, _false, _null);
+final parser = _createParser();
+
+final _chars = _Chars().as('chars');
+
+final _ws = _WS();
+
+Parser _createParser() {
+  final _closeBrace = tokChar($close_brace, '}', null, _ws);
+
+  final _closeBracket = tokChar($close_bracket, ']', null, _ws);
+
+  final _colon = tokChar($colon, ':', null, _ws);
+
+  final _eof = tok(not(anyChar()), 'end of file', null, _ws);
+
+  final _comma = tokChar($comma, ',', null, _ws);
+
+  final _false = tokStr('false', 'false', false, _ws);
+
+  final _null = tokStr('null', 'null', null, _ws);
+
+  final _openBrace = tokChar($open_brace, '{', null, _ws);
+
+  final _openBracket = tokChar($open_bracket, '[', null, _ws);
+
+  final _true = tokStr('true', 'true', true, _ws);
+
+  final _string = _String().as('string');
+
+  final _value = ref().as('value') as RefParser;
+
+  final _values = sepBy(_value, _comma).as('values');
+
+  final _array = between(_openBracket, _values, _closeBracket).as('array');
+
+  final _member = around(_string, _colon, _value).as('member');
+
+  final _members = sepBy(_member, _comma).as('members');
+
+  final _object = between(_openBrace, _members, _closeBrace)
+      .mapper(_ObjectMapper())
+      .as('object');
+
+  final _number = _Number().as('number');
+
+  _value.p = choice7(_object, _array, _string, _number, _true, _false, _null)
+      .as('value');
+
+  final _json = between(white(_ws), _value, _eof).as('json');
+
   return _json;
-}();
-
-final _array = _Array();
-
-final _chars = _Chars();
-
-final _closeBrace = _CloseBrace();
-
-final _closeBracket = _CloseBracket();
-
-final _colon = _Colon();
-
-final _comma = _Comma();
-
-final _eof = _Eof();
-
-final _false = _False();
-
-final _json = _Json();
-
-final _member = _Member();
-
-final _members = _Members();
-
-final _null = _Null();
-
-final _number = _Number();
-
-final _object = _Object();
-
-final _openBrace = _OpenBrace();
-
-final _openBracket = _OpenBracket();
-
-final _string = _String();
-
-final _true = _True();
-
-final _value = _Value();
-
-final _values = _Values();
-
-final _white = _White();
-
-class _Array extends BetweenParser {
-  _Array() : super(_openBracket, _values, _closeBracket);
 }
 
 class _Chars extends Parser<List<int>> {
@@ -155,70 +156,30 @@ class _Chars extends Parser<List<int>> {
   }
 }
 
-class _CloseBrace extends OrFailParser {
-  _CloseBrace() : super(seq2(char($close_brace), _white), expectedError('}'));
-}
-
-class _CloseBracket extends OrFailParser {
-  _CloseBracket()
-      : super(seq2(char($close_bracket), _white), expectedError(']'));
-}
-
-class _Colon extends OrFailParser {
-  _Colon() : super(seq2(char($colon), _white), expectedError(':'));
-}
-
-class _Comma extends OrFailParser {
-  _Comma() : super(seq2(char($comma), _white), expectedError(','));
-}
-
-class _Eof extends OrFailParser {
-  _Eof() : super(not(anyChar()), expectedError('end of file'));
-}
-
-class _False extends _Term<bool> {
-  _False() : super('false', false);
-}
-
-class _Json extends BetweenParser {
-  _Json() : super(_white, _value, _eof);
-}
-
-class _Member extends AroundParser<String, dynamic> {
-  _Member() : super(_string, _colon, _value);
-}
-
-class _Members extends SepByParser<Tuple2<String, dynamic>> {
-  _Members() : super(_member, _comma);
-}
-
-class _Null extends _Term {
-  _Null() : super('null', null);
-}
-
 class _Number extends Parser<num> {
-  static final _digit = digit();
+  static final _digit = digit().as('[0-9]');
 
-  static final _digit19 = ranges1(Range($1, $9));
+  static final _digit19 = ranges1(Range($1, $9)).as('[1-9]');
 
-  static final _dot = char($dot);
+  static final _dot = char($dot).as('.');
 
-  static final _eE = chars2($e, $E);
+  static final _eE = chars2($e, $E).as('e | E');
 
-  static final _exp = seq3(_eE, _signs.opt, _digit.skipMany1);
+  static final _exp = seq3(_eE, _signs.opt, _digit.skipMany1).as('exp');
 
-  static final _frac = seq2(_dot, _digit.skipMany1);
+  static final _frac = seq2(_dot, _digit.skipMany1).as('frac');
 
-  static final _integer = choice2(_zero, seq2(_digit19, _digit.skipMany));
+  static final _integer =
+      choice2(_zero, seq2(_digit19, _digit.skipMany)).as('integer');
 
-  static final _minus = char($minus);
+  static final _minus = char($minus).as('minus');
 
   static final _number =
-      left(seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture, _white);
+      seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture.as('_number');
 
-  static final _signs = chars2($plus, $minus);
+  static final _signs = chars2($plus, $minus).as('signs');
 
-  static final _zero = char($0);
+  static final _zero = char($0).as('zero');
 
   @override
   bool handleFastParse(ParseState state) => handleParse(state) != null;
@@ -231,59 +192,35 @@ class _Number extends Parser<num> {
       return null;
     }
 
+    _ws.skip(state);
     final v1 = r1.$0;
     final v2 = parseNumber(v1);
     return Tuple1(v2);
   }
 }
 
-class _Object extends Parser<Map<String, dynamic>> {
-  final BetweenParser<List<Tuple2<String, dynamic>>> p;
-
-  _Object() : p = between(_openBrace, _members, _closeBrace);
-
+class _ObjectMapper
+    implements Mapper<List<Tuple2<String, dynamic>>, Map<String, dynamic>> {
   @override
-  bool handleFastParse(ParseState state) => p.fastParse(state);
-
-  @override
-  Tuple1<Map<String, dynamic>>? handleParse(ParseState state) {
-    final r1 = p.parse(state);
-    if (r1 != null) {
-      final v1 = r1.$0;
-      final v2 = <String, dynamic>{};
-      for (var i = 0; i < v1.length; i++) {
-        final v3 = v1[i];
-        v2[v3.$0] = v3.$1;
-      }
-
-      return Tuple1(v2);
+  Map<String, dynamic> map(List<Tuple2<String, dynamic>> value) {
+    final r = <String, dynamic>{};
+    for (var i = 0; i < value.length; i++) {
+      final v = value[i];
+      r[v.$0] = v.$1;
     }
+
+    return r;
   }
 }
 
-class _OpenBrace extends OrFailParser {
-  _OpenBrace() : super(seq2(char($open_brace), _white), expectedError('{'));
-}
-
-class _OpenBracket extends OrFailParser {
-  _OpenBracket() : super(seq2(char($open_bracket), _white), expectedError('['));
-}
-
-class _Ref<E> extends Parser<E> {
-  Parser<E> p = DummyParser();
-
-  @override
-  bool handleFastParse(ParseState state) => p.fastParse(state);
-
-  @override
-  Tuple1<E>? handleParse(ParseState state) => p.parse(state);
-}
-
 class _String extends Parser<String> {
-  final BetweenParser<List<int>> chars;
+  static final _quote = char($quote).as('open_quote');
+
+  final Parser<List<int>> chars;
 
   _String()
-      : chars = BetweenParser(char($quote), _chars, seq2(char($quote), _white));
+      : chars = between(_quote, _chars, tokChar($quote, '\'', null, _ws))
+            .as('chars');
 
   @override
   bool handleFastParse(ParseState state) {
@@ -310,80 +247,41 @@ class _String extends Parser<String> {
   }
 }
 
-class _Term<E> extends Parser<E> {
-  final String name;
-
-  final Parser p;
-
-  final Tuple1<E> res;
-
-  final Parser white = _white;
-
-  _Term(this.name, E v)
-      : p = str(name),
-        res = Tuple1(v);
-
-  @override
-  bool handleFastParse(ParseState state) {
-    if (p.fastParse(state)) {
-      white.fastParse(state);
-      return true;
-    }
-
-    state.fail(expectedError(name), state.pos);
-    return false;
-  }
-
-  @override
-  Tuple1<E>? handleParse(ParseState state) {
-    if (p.fastParse(state)) {
-      white.fastParse(state);
-      return res;
-    }
-
-    state.fail(expectedError(name), state.pos);
-  }
-}
-
-class _True extends _Term {
-  _True() : super('true', true);
-}
-
-class _Value<E> extends _Ref<E> {
-  //
-}
-
-class _Values extends SepByParser {
-  _Values() : super(_value, _comma);
-}
-
 class _White extends Parser {
-  final Matcher<int> m =
-      AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
-
   @override
   bool handleFastParse(ParseState state) {
-    while (true) {
-      final c = state.ch;
-      if (m.match(c)) {
-        state.nextChar();
-        continue;
-      }
-
-      return true;
-    }
+    _ws.skip(state);
+    return true;
   }
 
   @override
   Tuple1? handleParse(ParseState state) {
+    _ws.skip(state);
+    return const Tuple1(null);
+  }
+}
+
+class _WS implements Skipper {
+  final Matcher<int> _m =
+      AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
+
+  @override
+  void skip(ParseState state) {
     while (true) {
-      final c = state.ch;
-      if (m.match(c)) {
+      if (_m.match(state.ch)) {
         state.nextChar();
         continue;
       }
 
-      return const Tuple1(null);
+      break;
     }
+  }
+}
+
+extension<E> on Parser<E> {
+  Parser<E> as(String label) {
+    this.label = label;
+    quote = label.contains(' ');
+    return this;
   }
 }

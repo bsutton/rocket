@@ -7,8 +7,8 @@ AroundParser<E1, E2> around<E1, E2>(Parser<E1> p1, Parser p2, Parser<E2> p3) =>
 /// The [AroundParser] parser invokes sequentially [p1], [p2] and [p3] and
 /// parses successfully if all parsers succeed.
 ///
-/// Returns: [Tuple2] of results [p1] and [p3].
-/// ```
+/// Returns [Tuple2] of parsing results [p1] and [p3].
+/// ```dart
 /// final member = around(string, colon, value);
 /// ```
 class AroundParser<E1, E2> extends Parser<Tuple2<E1, E2>> {

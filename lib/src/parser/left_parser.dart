@@ -7,7 +7,7 @@ LeftParser<E> left<E>(Parser<E> p1, Parser p2) => LeftParser(p1, p2);
 /// successfully if all parsers succeed.
 ///
 /// Returns the result of parsing [p1].
-/// ```
+/// ```dart
 /// final p = left(p1, p2);
 /// ```
 class LeftParser<E> extends Parser<E> {

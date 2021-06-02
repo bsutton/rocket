@@ -1,8 +1,20 @@
 part of '../../parser.dart';
 
+/// Creates the [ExpectedParser] parser.
 ExpectedParser<E> expected<E>(Parser<E> p, String label) =>
     ExpectedParser(p, label);
 
+/// The [ExpectedParser] parser invokes [p] and parses succefully if [p]
+/// succeed.
+///
+/// Also set the [label] to the [p] if no label is set.
+///
+/// Return the result of parsing [p]; otherwise generates the error
+/// [ExpectedError] using [label] as an argument.
+///
+/// ```dart
+/// final p = expected(digit(), 'some digit');
+/// ```
 class ExpectedParser<E> extends Parser<E> {
   final Parser<E> p;
 
@@ -41,5 +53,9 @@ class ExpectedParser<E> extends Parser<E> {
 }
 
 extension ExpectedParserExt<E> on Parser<E> {
+  /// Creates the [ExpectedParser] parser.
+  /// ```dart
+  /// final p = digit().expected('some digit');
+  /// ```
   ExpectedParser<E> expected(String label) => ExpectedParser(this, label);
 }

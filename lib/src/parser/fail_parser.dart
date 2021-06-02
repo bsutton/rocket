@@ -33,10 +33,9 @@ class FailParser<E> extends Parser<E> {
 }
 
 /// The [OrFailParser] parser invokes [p] and parses successfully if [p]
-/// succeed; otherwise invoke the method `state.fail (err, state.pos)` and does
-/// not succeed.
+/// succeed.
 ///
-/// Returns result of parsing [p].
+/// Returns the result of parsing [p]; otherwise generates the error [err].
 /// ```dart
 /// final p = choice2(str('true', fail(err)));
 /// ```

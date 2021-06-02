@@ -3,7 +3,7 @@ part of '../../parser.dart';
 /// Creates the [StrParser] parser.
 StrParser str<E>(String s) => StrParser(s);
 
-/// The [StrParser] parser consumes the string [s].
+/// The [StrParser] parses successfully if it can consume the string [s].
 ///
 /// Returns the string [s].
 /// ```dart

@@ -3,7 +3,8 @@ part of '../../parser.dart';
 /// Creates the [DigitParser] parser.
 DigitParser digit() => DigitParser();
 
-/// The [DigitParser] consumes one character in the range [0..9].
+/// The [DigitParser] parses successfully if it can consume one of the
+/// characters from the range [0..9].
 ///
 /// Returns the consumed character.
 /// ```dart

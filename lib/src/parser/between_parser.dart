@@ -7,8 +7,8 @@ BetweenParser<E> between<E>(Parser p1, Parser<E> p2, Parser p3) =>
 /// The [BetweenParser] parser invokes sequentially [p1], [p2] and [p3] and
 /// parses successfully if all parsers succeed.
 ///
-/// Returns the result of [p2].
-/// ```
+/// Returns the result of parsing [p2].
+/// ```dart
 /// final string = between(char($quote), char.many, char($quote));
 /// ```
 class BetweenParser<E> extends Parser<E> {

@@ -25,7 +25,8 @@ Chars6Parser chars6(int c1, int c2, int c3, int c4, int c5, int c6) =>
 Chars7Parser chars7(int c1, int c2, int c3, int c4, int c5, int c6, int c7) =>
     Chars7Parser(c1, c2, c3, c4, c5, c6, c7);
 
-/// The [Char2Parser] parser consumes one of 2 characters [c1], [c2].
+/// The [Char4Parser] parses successfully if it can consume one of characters
+/// [c1] or [c2].
 ///
 /// Returns the consumed character.
 /// ```dart
@@ -59,7 +60,8 @@ class Chars2Parser extends Parser<int> {
   }
 }
 
-/// The [Char3Parser] parser consumes one of 3 characters [c1], [c2], [c3].
+/// The [Char4Parser] parses successfully if it can consume one of characters
+/// [c1], [c2] or [c3].
 ///
 /// Returns the consumed character.
 /// ```dart
@@ -95,8 +97,8 @@ class Chars3Parser extends Parser<int> {
   }
 }
 
-/// The [Char4Parser] parser consumes one of 4 characters [c1], [c2], [c3],
-/// [c4].
+/// The [Char4Parser] parses successfully if it can consume one of characters
+/// [c1], [c2], [c3] or [c4].
 ///
 /// Returns the consumed character.
 /// ```dart
@@ -134,8 +136,8 @@ class Chars4Parser extends Parser<int> {
   }
 }
 
-/// The [Char5Parser] parser consumes one of 5 characters [c1], [c2], [c3],
-/// [c4], [c5].
+/// The [Char5Parser] parses successfully if it can consume one of characters
+/// [c1], [c2], [c3], [c4] or [c5].
 ///
 /// Returns the consumed character.
 /// ```dart
@@ -175,8 +177,8 @@ class Chars5Parser extends Parser<int> {
   }
 }
 
-/// The [Char6Parser] parser consumes one of 6 characters [c1], [c2], [c3],
-/// [c4], [c5], [c6].
+/// The [Char6Parser] parses successfully if it can consume one of characters
+/// [c1], [c2], [c3], [c4], [c5] or [c6].
 ///
 /// Returns the consumed character.
 /// ```dart
@@ -218,8 +220,8 @@ class Chars6Parser extends Parser<int> {
   }
 }
 
-/// The [Char7Parser] parser consumes one of 7 characters [c1], [c2], [c3],
-/// [c4], [c5], [c6], [c7].
+/// The [Char7Parser] parses successfully if it can consume one of characters
+/// [c1], [c2], [c3], [c4], [c5], [c6] or [c7].
 ///
 /// Returns the consumed character.
 /// ```dart
@@ -275,7 +277,8 @@ class Chars7Parser extends Parser<int> {
   }
 }
 
-/// The [CharParser] parser consumes one of characters [cs].
+/// The [CharParser] parses successfully if it can consume one of spefied
+/// characters.
 ///
 /// Returns the consumed character.
 /// ```dart

@@ -124,9 +124,13 @@ abstract class Parser<E> {
     return true;
   }
 
+  /// A `protected` method that passively parses data. Called from the
+  /// [fastParse] method.
   @protected
   bool handleFastParse(ParseState state);
 
+  /// A `protected` method that actively parses data. Called from the [parse]
+  /// method.
   @protected
   Tuple1<E>? handleParse(ParseState state);
 

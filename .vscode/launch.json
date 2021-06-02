@@ -8,8 +8,8 @@
             "type": "dart",
         },
         {
-            "name": "csv_parser.dart",
-            "program": "example/csv_parser.dart",
+            "name": "example.dart",
+            "program": "example/example.dart",
             "request": "launch",
             "type": "dart",
         },

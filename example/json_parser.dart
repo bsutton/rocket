@@ -247,20 +247,6 @@ class _String extends Parser<String> {
   }
 }
 
-class _White extends Parser {
-  @override
-  bool handleFastParse(ParseState state) {
-    _ws.skip(state);
-    return true;
-  }
-
-  @override
-  Tuple1? handleParse(ParseState state) {
-    _ws.skip(state);
-    return const Tuple1(null);
-  }
-}
-
 class _WS implements Skipper {
   final Matcher<int> _m =
       AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);

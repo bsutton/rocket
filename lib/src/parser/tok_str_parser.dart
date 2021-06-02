@@ -31,12 +31,25 @@ class TokStrParser<E> extends Parser<E> {
     final ch = state.ch;
     final pos = state.pos;
     if (state.ch == _c) {
-      if (state.source.startsWith(s, pos)) {
-        final pos2 = pos + s.length;
-        state.pos = pos2;
-        state.getChar(pos2);
-        ws.skip(state);
-        return true;
+      final source = state.source;
+      final length = s.length;
+      var ok = true;
+      var newPos = pos + 1;
+      if (pos + length <= state.length) {
+        for (var i = 1; i < length; i++) {
+          final ch = source.codeUnitAt(newPos++);
+          if (ch != s.codeUnitAt(i)) {
+            ok = false;
+            break;
+          }
+        }
+
+        if (ok) {
+          state.pos = newPos;
+          state.getChar(newPos);
+          ws.skip(state);
+          return true;
+        }
       }
     }
 
@@ -51,12 +64,25 @@ class TokStrParser<E> extends Parser<E> {
     final ch = state.ch;
     final pos = state.pos;
     if (state.ch == _c) {
-      if (state.source.startsWith(s, pos)) {
-        final pos2 = pos + s.length;
-        state.pos = pos2;
-        state.getChar(pos2);
-        ws.skip(state);
-        return _res;
+      final source = state.source;
+      final length = s.length;
+      var ok = true;
+      var newPos = pos + 1;
+      if (pos + length <= state.length) {
+        for (var i = 1; i < length; i++) {
+          final ch = source.codeUnitAt(newPos++);
+          if (ch != s.codeUnitAt(i)) {
+            ok = false;
+            break;
+          }
+        }
+
+        if (ok) {
+          state.pos = newPos;
+          state.getChar(newPos);
+          ws.skip(state);
+          return _res;
+        }
       }
     }
 

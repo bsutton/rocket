@@ -3,7 +3,7 @@ part of '../../parser.dart';
 /// Creates the [CharParser] parser.
 CharParser char(int c) => CharParser(c);
 
-/// The [CharParser] parser consumes one character [c].
+/// The [CharParser] parses successfully if it can consume the character [c].
 ///
 /// Returns the character [c].
 /// ```dart

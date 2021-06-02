@@ -32,7 +32,8 @@ Choice7Parser<E> choice7<E>(Parser<E> p1, Parser<E> p2, Parser<E> p3,
     Choice7Parser(p1, p2, p3, p4, p5, p6, p7);
 
 /// The [Choice2Parser] parser invokes [p1]or [p2] until one of them parses
-/// successfully.
+/// successfully. It will be parsed successfully if one of the parsers
+/// succeeds.
 ///
 /// Returns the result of parsing one of the parsers.
 /// ```dart
@@ -75,7 +76,8 @@ class Choice2Parser<E> extends Parser<E> {
 }
 
 /// The [Choice3Parser] parser invokes [p1], [p2] or [p3]
-/// until one of them parses successfully.
+/// until one of them parses successfully. It will be parsed successfully if
+/// one of the parsers succeeds.
 ///
 /// Returns the result of parsing one of the parsers.
 /// ```dart
@@ -129,7 +131,8 @@ class Choice3Parser<E> extends Parser<E> {
 }
 
 /// The [Choice4Parser] parser invokes [p1], [p2], [p3] or [p4]
-/// until one of them parses successfully.
+/// until one of them parses successfully. It will be parsed successfully if
+/// one of the parsers succeeds.
 ///
 /// Returns the result of parsing one of the parsers.
 /// ```dart
@@ -194,7 +197,8 @@ class Choice4Parser<E> extends Parser<E> {
 }
 
 /// The [Choice5Parser] parser invokes [p1], [p2], [p3], [p4] or [p5]
-/// until one of them parses successfully.
+/// until one of them parses successfully. It will be parsed successfully if
+/// one of the parsers succeeds.
 ///
 /// Returns the result of parsing one of the parsers.
 /// ```dart
@@ -270,7 +274,8 @@ class Choice5Parser<E> extends Parser<E> {
 }
 
 /// The [Choice6Parser] parser invokes [p1], [p2], [p3], [p4], [p5] or [p6]
-/// until one of them parses successfully.
+/// until one of them parses successfully. It will be parsed successfully if
+/// one of the parsers succeeds.
 ///
 /// Returns the result of parsing one of the parsers.
 /// ```dart
@@ -357,7 +362,8 @@ class Choice6Parser<E> extends Parser<E> {
 }
 
 /// The [Choice7Parser] parser invokes [p1], [p2], [p3], [p4], [p5], [p6] or
-/// [p7] until one of them parses successfully.
+/// [p7] until one of them parses successfully. It will be parsed successfully
+/// if one of the parsers succeeds.
 ///
 /// Returns the result of parsing one of the parsers.
 /// ```dart

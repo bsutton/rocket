@@ -1,8 +1,12 @@
 ## 0.1.9
 
+- Breaking change: The typed data `ByteData` is now used as input data for parsing
 - Minor cosmetic improvements in the `json_parser.dart` example file.
 - Added parser `ExpectedParser`
 - Added parser `WhiteParser`
+- Partially added API documentation
+- Added matcher `IntMatcher` with binary search
+- Added matcher `RangesMatcher` with binary search
 
 ## 0.1.8
 
@@ -13,7 +17,7 @@
 - Added parser `TokStrParser`
 - Added `Skipper` functionality to skip input data (e.g. whitespaces) as quickly as possible
 - Added `ParseTracer` functionality for easy (configurable) tracking of the parsing process
-- Breaking change (to implement traceability): parsers must declare  methods `handleFastParse` and `handleParse`
+- Breaking change (to implement traceability): parsers must declare  methods `fastParse` and `parse`
 
 ## 0.1.7
 

@@ -49,7 +49,7 @@ class Choice2Parser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     if (p1.fastParse(state)) {
       return true;
     }
@@ -62,7 +62,7 @@ class Choice2Parser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     final r1 = p1.parse(state);
     if (r1 != null) {
       return r1;
@@ -95,7 +95,7 @@ class Choice3Parser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     if (p1.fastParse(state)) {
       return true;
     }
@@ -112,7 +112,7 @@ class Choice3Parser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     final r1 = p1.parse(state);
     if (r1 != null) {
       return r1;
@@ -152,7 +152,7 @@ class Choice4Parser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     if (p1.fastParse(state)) {
       return true;
     }
@@ -173,7 +173,7 @@ class Choice4Parser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     final r1 = p1.parse(state);
     if (r1 != null) {
       return r1;
@@ -220,7 +220,7 @@ class Choice5Parser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     if (p1.fastParse(state)) {
       return true;
     }
@@ -245,7 +245,7 @@ class Choice5Parser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     final r1 = p1.parse(state);
     if (r1 != null) {
       return r1;
@@ -299,7 +299,7 @@ class Choice6Parser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     if (p1.fastParse(state)) {
       return true;
     }
@@ -328,7 +328,7 @@ class Choice6Parser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     final r1 = p1.parse(state);
     if (r1 != null) {
       return r1;
@@ -389,7 +389,7 @@ class Choice7Parser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     if (p1.fastParse(state)) {
       return true;
     }
@@ -422,7 +422,7 @@ class Choice7Parser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     final r1 = p1.parse(state);
     if (r1 != null) {
       return r1;
@@ -479,7 +479,7 @@ class ChoiceParser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     for (var i = 0; i < ps.length; i++) {
       final p = ps[i];
       if (p.fastParse(state)) {
@@ -491,7 +491,7 @@ class ChoiceParser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     for (var i = 0; i < ps.length; i++) {
       final p = ps[i];
       final r1 = p.parse(state);

@@ -18,10 +18,10 @@ class MapParser<I, O> extends Parser<O> {
   MapParser(this.p, this.f);
 
   @override
-  bool handleFastParse(ParseState state) => p.fastParse(state);
+  bool fastParse(ParseState state) => p.fastParse(state);
 
   @override
-  Tuple1<O>? handleParse(ParseState state) {
+  Tuple1<O>? parse(ParseState state) {
     final r1 = p.parse(state);
     if (r1 != null) {
       final v1 = r1.$0;

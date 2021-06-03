@@ -14,32 +14,43 @@ class DigitParser extends Parser<int> {
   final _tab = List<Tuple1<int>>.generate(10, (i) => Tuple1(i));
 
   @override
-  bool handleFastParse(ParseState state) {
-    final c = state.ch;
-    if (c >= 0x30 && c <= 0x39) {
-      state.nextChar();
-      return true;
+  bool fastParse(ParseState state) {
+    final pos = state.pos;
+    if (pos + 2 <= state.length) {
+      final c = state.data.getUint16(pos, Endian.little);
+      if (c >= 0x30 && c <= 0x39) {
+        state.pos += 2;
+        return true;
+      }
     }
 
     return false;
   }
 
   @override
-  Tuple1<int>? handleParse(ParseState state) {
-    final c = state.ch;
-    if (c >= 0x30 && c <= 0x39) {
-      state.nextChar();
-      return _tab[c - 0x30];
+  Tuple1<int>? parse(ParseState state) {
+    final pos = state.pos;
+    if (pos + 2 <= state.length) {
+      final c = state.data.getUint16(pos, Endian.little);
+      if (c >= 0x30 && c <= 0x39) {
+        state.pos += 2;
+        return _tab[c - 0x30];
+      }
     }
   }
 
   @override
   bool fastParseMany(ParseState state) {
+    final source = state.data;
+    final length = state.length;
     while (true) {
-      final c = state.ch;
-      if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        continue;
+      final pos = state.pos;
+      if (pos + 2 <= length) {
+        final c = source.getUint16(pos, Endian.little);
+        if (c >= 0x30 && c <= 0x39) {
+          state.pos += 2;
+          continue;
+        }
       }
 
       return true;
@@ -48,64 +59,45 @@ class DigitParser extends Parser<int> {
 
   @override
   bool fastParseMany1(ParseState state) {
-    final c = state.ch;
-    if (c < 0x30 || c > 0x39) {
-      return false;
-    }
-
-    state.nextChar();
-    while (true) {
-      final c = state.ch;
+    final pos = state.pos;
+    final length = state.length;
+    if (pos + 2 <= length) {
+      final source = state.data;
+      final c = source.getUint16(pos, Endian.little);
       if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        continue;
+        state.pos += 2;
+        while (true) {
+          final pos = state.pos;
+          if (pos + 2 <= length) {
+            final c = source.getUint16(pos, Endian.little);
+            if (c >= 0x30 && c <= 0x39) {
+              state.pos += 2;
+              continue;
+            }
+          }
+
+          return true;
+        }
       }
-
-      return true;
-    }
-  }
-
-  @override
-  bool fastParseSkipMany(ParseState state) {
-    while (true) {
-      final c = state.ch;
-      if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        continue;
-      }
-
-      return true;
-    }
-  }
-
-  @override
-  bool fastParseSkipMany1(ParseState state) {
-    final c = state.ch;
-    if (c < 0x30 || c > 0x39) {
-      return false;
     }
 
-    state.nextChar();
-    while (true) {
-      final c = state.ch;
-      if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        continue;
-      }
-
-      return true;
-    }
+    return false;
   }
 
   @override
   Tuple1<List<int>>? parseMany(ParseState state) {
     final list = <int>[];
+    final source = state.data;
+    final length = state.length;
     while (true) {
-      final c = state.ch;
-      if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        list.add(c - 0x30);
-        continue;
+      final pos = state.pos;
+      if (pos + 2 <= length) {
+        final c = source.getUint16(pos, Endian.little);
+        if (c >= 0x30 && c <= 0x39) {
+          state.pos += 2;
+          list.add(c - 0x30);
+          continue;
+        }
       }
 
       return Tuple1(list);
@@ -114,53 +106,28 @@ class DigitParser extends Parser<int> {
 
   @override
   Tuple1<List<int>>? parseMany1(ParseState state) {
-    final c = state.ch;
-    if (c < 0x30 || c > 0x39) {
-      return null;
-    }
-
-    state.nextChar();
-    final list = [c - 0x30];
-    while (true) {
-      final c = state.ch;
+    final pos = state.pos;
+    final length = state.length;
+    if (pos + 2 <= length) {
+      final source = state.data;
+      final c = source.getUint16(pos, Endian.little);
       if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        list.add(c - 0x30);
-        continue;
+        state.pos += 2;
+        final list = [c];
+        while (true) {
+          final pos = state.pos;
+          if (pos + 2 <= length) {
+            final c = source.getUint16(pos, Endian.little);
+            if (c >= 0x30 && c <= 0x39) {
+              state.pos += 2;
+              list.add(c);
+              continue;
+            }
+          }
+
+          return Tuple1(list);
+        }
       }
-
-      return Tuple1(list);
-    }
-  }
-
-  @override
-  Tuple1? parseSkipMany(ParseState state) {
-    while (true) {
-      final c = state.ch;
-      if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        continue;
-      }
-
-      return const Tuple1(null);
-    }
-  }
-
-  @override
-  Tuple1? parseSkipMany1(ParseState state) {
-    final c = state.ch;
-    if (c < 0x30 || c > 0x39) {
-      return null;
-    }
-
-    while (true) {
-      final c = state.ch;
-      if (c >= 0x30 && c <= 0x39) {
-        state.nextChar();
-        continue;
-      }
-
-      return const Tuple1(null);
     }
   }
 }

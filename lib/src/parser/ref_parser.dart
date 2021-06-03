@@ -24,8 +24,34 @@ class RefParser<E> extends Parser<E?> {
   }
 
   @override
-  bool handleFastParse(ParseState state) => _p.fastParse(state);
+  bool fastParse(ParseState state) => _p.fastParse(state);
 
   @override
-  Tuple1<E?>? handleParse(ParseState state) => _p.parse(state);
+  Tuple1<E?>? parse(ParseState state) => _p.parse(state);
+
+  @override
+  Tuple1<List<E>>? parseSepBy(ParseState state, Parser sep) {
+    final r1 = _p.parse(state);
+    if (r1 == null) {
+      return Tuple1(<E>[]);
+    }
+
+    final list = [r1.$0];
+    while (true) {
+      final pos = state.pos;
+      if (!sep.fastParse(state)) {
+        break;
+      }
+
+      final r2 = _p.parse(state);
+      if (r2 == null) {
+        state.pos = pos;
+        break;
+      }
+
+      list.add(r2.$0);
+    }
+
+    return Tuple1(list);
+  }
 }

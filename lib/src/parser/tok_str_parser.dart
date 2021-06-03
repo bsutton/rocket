@@ -1,6 +1,6 @@
 part of '../../parser.dart';
 
-TokStrParser<E> tokStr<E>(String s, String label, E val, Skipper ws) =>
+TokStrParser<E> tokStr<E>(String s, String label, E val, Parser ws) =>
     TokStrParser(s, label, val, ws);
 
 class TokStrParser<E> extends Parser<E> {
@@ -8,11 +8,13 @@ class TokStrParser<E> extends Parser<E> {
 
   final E val;
 
-  final Skipper ws;
+  final Parser ws;
 
   final int _c;
 
   final ExpectedError _err;
+
+  final int _length;
 
   final Tuple1<E> _res;
 
@@ -21,33 +23,34 @@ class TokStrParser<E> extends Parser<E> {
             ? s.codeUnitAt(0)
             : throw ArgumentError.value(s, 's', 'Must not be empty'),
         _err = ExpectedError(label),
+        _length = s.length << 1,
         _res = Tuple1(val) {
     this.label = label;
     quote = false;
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
-    if (state.ch == _c) {
-      final source = state.source;
-      final length = s.length;
-      var ok = true;
-      var newPos = pos + 1;
-      if (pos + length <= state.length) {
-        for (var i = 1; i < length; i++) {
-          final ch = source.codeUnitAt(newPos++);
-          if (ch != s.codeUnitAt(i)) {
+    final data = state.data;
+    if (pos + _length <= state.length) {
+      final c = data.getUint16(pos, Endian.little);
+      if (c == _c) {
+        var ok = true;
+        var newPos = pos + 2;
+        for (var i = 1; i < s.length; i++) {
+          final c = data.getUint16(newPos, Endian.little);
+          if (c != s.codeUnitAt(i)) {
             ok = false;
             break;
           }
+
+          newPos += 2;
         }
 
         if (ok) {
           state.pos = newPos;
-          state.getChar(newPos);
-          ws.skip(state);
+          ws.fastParse(state);
           return true;
         }
       }
@@ -55,32 +58,31 @@ class TokStrParser<E> extends Parser<E> {
 
     state.fail(_err, pos);
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<E>? parse(ParseState state) {
     final pos = state.pos;
-    if (state.ch == _c) {
-      final source = state.source;
-      final length = s.length;
-      var ok = true;
-      var newPos = pos + 1;
-      if (pos + length <= state.length) {
-        for (var i = 1; i < length; i++) {
-          final ch = source.codeUnitAt(newPos++);
-          if (ch != s.codeUnitAt(i)) {
+    final data = state.data;
+    if (pos + _length <= state.length) {
+      final c = data.getUint16(pos, Endian.little);
+      if (c == _c) {
+        var ok = true;
+        var newPos = pos + 2;
+        for (var i = 1; i < s.length; i++) {
+          final c = data.getUint16(newPos, Endian.little);
+          if (c != s.codeUnitAt(i)) {
             ok = false;
             break;
           }
+
+          newPos += 2;
         }
 
         if (ok) {
           state.pos = newPos;
-          state.getChar(newPos);
-          ws.skip(state);
+          ws.fastParse(state);
           return _res;
         }
       }
@@ -88,6 +90,5 @@ class TokStrParser<E> extends Parser<E> {
 
     state.fail(_err, pos);
     state.pos = pos;
-    state.ch = ch;
   }
 }

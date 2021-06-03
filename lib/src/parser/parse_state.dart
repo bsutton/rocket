@@ -1,8 +1,7 @@
 part of '../../parser.dart';
 
 class DummyParseState extends ParseState {
-  DummyParseState(ParseState state) : super(state.source, init: false) {
-    ch = state.ch;
+  DummyParseState(ParseState state) : super(state.data) {
     pos = state.pos;
   }
 
@@ -13,10 +12,6 @@ class DummyParseState extends ParseState {
 }
 
 class ParseState {
-  static const int eof = 1114112;
-
-  int ch = 0;
-
   int failPos = 0;
 
   Buffer failures = Buffer(100);
@@ -25,15 +20,12 @@ class ParseState {
 
   int pos = 0;
 
-  final String source;
+  final ByteData data;
 
-  ParseState(this.source, {bool init = true}) : length = source.length {
-    if (init) {
-      getChar(0);
-    }
-  }
+  ParseState(this.data) : length = data.lengthInBytes;
 
-  FormatException buildError() {
+  List<String> buildErrors() {
+    final result = <String>[];
     final sink = StringBuffer();
     final parseErrors = failures.whereType<ParseError>();
     if (parseErrors.isNotEmpty) {
@@ -45,17 +37,17 @@ class ParseState {
         sink.write(key);
         sink.write(': ');
         sink.write(quoted.join(', '));
-        sink.writeln();
+        result.add(sink.toString());
       }
     }
 
     final set = failures.toSet();
     set.removeAll(parseErrors);
     for (final error in set) {
-      sink.writeln(error);
+      result.add(error.toString());
     }
 
-    return FormatException(sink.toString(), source, failPos);
+    return result;
   }
 
   @inline
@@ -85,47 +77,19 @@ class ParseState {
 
     failures.addAll(errors);
   }
+}
 
-  int getChar(int pos) {
-    if (pos < length) {
-      final c = source.codeUnitAt(pos);
-      ch = c;
-      if (c < 0xD800) {
-        return c;
-      }
-
-      return _getChar32(pos);
-    }
-
-    return ch = eof;
-  }
-
-  @inline
-  int nextChar() {
-    var c = ch;
-    pos += c <= 0xffff ? 1 : 2;
-    if (pos < length) {
-      c = source.codeUnitAt(pos);
-      ch = c;
-      if (c < 0xD800 || c > 0xDFFF) {
-        return c;
-      }
-
-      return _getChar32(pos);
-    }
-
-    return ch = eof;
-  }
+class StringParseState extends ParseState {
+  final String source;
 
   @override
   String toString() {
     final sink = StringBuffer();
     sink.write(pos);
     sink.write(' (');
-    sink.write(ch);
     sink.write('):');
     if (pos < length) {
-      var rest = length - pos;
+      var rest = (length - pos) >> 1;
       rest = rest > 24 ? 24 : rest;
       sink.write(source.substring(pos, pos + rest));
     }
@@ -133,26 +97,6 @@ class ParseState {
     return sink.toString();
   }
 
-  int _getChar32(int pos) {
-    var c = ch;
-    if (c >= 0xD800 && c <= 0xDBFF) {
-      if (pos + 1 < source.length) {
-        final c2 = source.codeUnitAt(pos + 1);
-        if (c2 >= 0xDC00 && c2 <= 0xDFFF) {
-          c = ((c - 0xD800) << 10) + (c2 - 0xDC00) + 0x10000;
-        } else {
-          throw FormatException('Unpaired high surrogate', source, pos);
-        }
-      } else {
-        throw FormatException('The source has been exhausted', source, pos);
-      }
-    } else {
-      if (c >= 0xDC00 && c <= 0xDFFF) {
-        throw FormatException(
-            'UTF-16 surrogate values are illegal in UTF-32', source, pos);
-      }
-    }
-
-    return ch = c;
-  }
+  StringParseState(this.source)
+      : super(Uint16List.fromList(source.codeUnits).buffer.asByteData());
 }

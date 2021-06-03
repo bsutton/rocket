@@ -22,10 +22,10 @@ class ValParser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) => p.fastParse(state);
+  bool fastParse(ParseState state) => p.fastParse(state);
 
   @override
-  Tuple1<E>? handleParse(ParseState state) => p.fastParse(state) ? _res : null;
+  Tuple1<E>? parse(ParseState state) => p.fastParse(state) ? _res : null;
 }
 
 extension ValParserExt on Parser {

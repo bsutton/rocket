@@ -1,6 +1,6 @@
 part of '../../parser.dart';
 
-TokParser<E> tok<E>(Parser p, String label, E val, Skipper ws) =>
+TokParser<E> tok<E>(Parser p, String label, E val, Parser ws) =>
     TokParser(p, label, val, ws);
 
 class TokParser<E> extends Parser<E> {
@@ -8,7 +8,7 @@ class TokParser<E> extends Parser<E> {
 
   final E val;
 
-  final Skipper ws;
+  final Parser ws;
 
   final ExpectedError _err;
 
@@ -22,31 +22,27 @@ class TokParser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p.fastParse(state)) {
-      ws.skip(state);
+      ws.fastParse(state);
       return true;
     }
 
     state.fail(_err, pos);
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<E>? parse(ParseState state) {
     final pos = state.pos;
     if (p.fastParse(state)) {
-      ws.skip(state);
+      ws.fastParse(state);
       return _res;
     }
 
     state.fail(_err, pos);
     state.pos = pos;
-    state.ch = ch;
   }
 }

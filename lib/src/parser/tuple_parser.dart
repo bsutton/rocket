@@ -57,8 +57,7 @@ class Tuple2Parser<E1, E2> extends Parser<Tuple2<E1, E2>> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -67,13 +66,11 @@ class Tuple2Parser<E1, E2> extends Parser<Tuple2<E1, E2>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<Tuple2<E1, E2>>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<Tuple2<E1, E2>>? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p1.parse(state);
     if (r1 != null) {
@@ -85,7 +82,6 @@ class Tuple2Parser<E1, E2> extends Parser<Tuple2<E1, E2>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -108,8 +104,7 @@ class Tuple3Parser<E1, E2, E3> extends Parser<Tuple3<E1, E2, E3>> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -120,13 +115,11 @@ class Tuple3Parser<E1, E2, E3> extends Parser<Tuple3<E1, E2, E3>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<Tuple3<E1, E2, E3>>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<Tuple3<E1, E2, E3>>? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p1.parse(state);
     if (r1 != null) {
@@ -141,7 +134,6 @@ class Tuple3Parser<E1, E2, E3> extends Parser<Tuple3<E1, E2, E3>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -166,8 +158,7 @@ class Tuple4Parser<E1, E2, E3, E4> extends Parser<Tuple4<E1, E2, E3, E4>> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -180,13 +171,11 @@ class Tuple4Parser<E1, E2, E3, E4> extends Parser<Tuple4<E1, E2, E3, E4>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<Tuple4<E1, E2, E3, E4>>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<Tuple4<E1, E2, E3, E4>>? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p1.parse(state);
     if (r1 != null) {
@@ -204,7 +193,6 @@ class Tuple4Parser<E1, E2, E3, E4> extends Parser<Tuple4<E1, E2, E3, E4>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -232,8 +220,7 @@ class Tuple5Parser<E1, E2, E3, E4, E5>
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -248,13 +235,11 @@ class Tuple5Parser<E1, E2, E3, E4, E5>
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<Tuple5<E1, E2, E3, E4, E5>>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<Tuple5<E1, E2, E3, E4, E5>>? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p1.parse(state);
     if (r1 != null) {
@@ -275,7 +260,6 @@ class Tuple5Parser<E1, E2, E3, E4, E5>
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -305,8 +289,7 @@ class Tuple6Parser<E1, E2, E3, E4, E5, E6>
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -323,13 +306,11 @@ class Tuple6Parser<E1, E2, E3, E4, E5, E6>
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<Tuple6<E1, E2, E3, E4, E5, E6>>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<Tuple6<E1, E2, E3, E4, E5, E6>>? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p1.parse(state);
     if (r1 != null) {
@@ -353,7 +334,6 @@ class Tuple6Parser<E1, E2, E3, E4, E5, E6>
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -385,8 +365,7 @@ class Tuple7Parser<E1, E2, E3, E4, E5, E6, E7>
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -405,13 +384,11 @@ class Tuple7Parser<E1, E2, E3, E4, E5, E6, E7>
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<Tuple7<E1, E2, E3, E4, E5, E6, E7>>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<Tuple7<E1, E2, E3, E4, E5, E6, E7>>? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p1.parse(state);
     if (r1 != null) {
@@ -439,7 +416,6 @@ class Tuple7Parser<E1, E2, E3, E4, E5, E6, E7>
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 

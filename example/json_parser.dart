@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:charcode/ascii.dart';
 import 'package:rocket/parse.dart';
 import 'package:rocket/parse_error.dart';
@@ -19,30 +21,32 @@ final parser = _createParser();
 
 final _chars = _Chars().as('chars');
 
-final _ws = _WS();
+final _white = _White();
 
 Parser _createParser() {
-  final _closeBrace = tokChar($close_brace, '}', null, _ws);
+  final _closeBrace = tokChar16($close_brace, '}', null, _white);
 
-  final _closeBracket = tokChar($close_bracket, ']', null, _ws);
+  final _closeBracket = tokChar16($close_bracket, ']', null, _white);
 
-  final _colon = tokChar($colon, ':', null, _ws);
+  final _colon = tokChar16($colon, ':', null, _white);
 
-  final _eof = tok(not(anyChar()), 'end of file', null, _ws);
+  final _eof = tok(atEnd(), 'end of file', null, _white);
 
-  final _comma = tokChar($comma, ',', null, _ws);
+  final _comma = tokChar16($comma, ',', null, _white);
 
-  final _false = tokStr('false', 'false', false, _ws);
+  final _false = tokStr('false', 'false', false, _white);
 
-  final _null = tokStr('null', 'null', null, _ws);
+  final _null = tokStr('null', 'null', null, _white);
 
-  final _openBrace = tokChar($open_brace, '{', null, _ws);
+  final _openBrace = tokChar16($open_brace, '{', null, _white);
 
-  final _openBracket = tokChar($open_bracket, '[', null, _ws);
+  final _openBracket = tokChar16($open_bracket, '[', null, _white);
 
-  final _true = tokStr('true', 'true', true, _ws);
+  final _true = tokStr('true', 'true', true, _white);
 
   final _string = _String().as('string');
+
+  final _number = _Number().as('number');
 
   final _value = ref().as('value') as RefParser;
 
@@ -58,78 +62,101 @@ Parser _createParser() {
       .mapper(_ObjectMapper())
       .as('object');
 
-  final _number = _Number().as('number');
-
   _value.p = choice7(_object, _array, _string, _number, _true, _false, _null)
       .as('value');
 
-  final _json = between(white(_ws), _value, _eof).as('json');
+  final _json = between(_white, _value, _eof).as('json');
 
   return _json;
 }
 
 class _Chars extends Parser<List<int>> {
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     parse(state);
     return true;
   }
 
   @override
-  Tuple1<List<int>>? handleParse(ParseState state) {
+  Tuple1<List<int>>? parse(ParseState state) {
     final list = <int>[];
-    int ch = 0;
-    int pos = 0;
+    var pos = state.pos;
+    final data = state.data;
+    final length = state.length;
     loop:
     while (true) {
-      ch = state.ch;
-      pos = state.pos;
-      var c = state.ch;
-      if ((c >= 0x5d && c <= 0x10ffff) ||
+      if (pos >= length) {
+        break;
+      }
+
+      var c = data.getUint16(pos, Endian.little);
+      if ((c >= 0x5d && c <= 0xd7ff) ||
           (c >= 0x23 && c <= 0x5b) ||
-          (c >= 0x20 && c <= 0x21)) {
-        state.nextChar();
+          (c >= 0x20 && c <= 0x21) ||
+          (c >= 0xe000 && c <= 0xffff)) {
+        pos += 2;
         list.add(c);
         continue;
       }
 
-      if (c != $backslash) {
-        break loop;
+      if (c >= 0xd800 && c <= 0xDBFF) {
+        if (pos + 2 < data.lengthInBytes) {
+          final c2 = data.getUint16(pos + 2, Endian.little);
+          if (c2 >= 0xDC00 && c2 <= 0xDFFF) {
+            c = ((c - 0xD800) << 10) + (c2 - 0xDC00) + 0x10000;
+            pos += 4;
+            list.add(c);
+            continue;
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
+      } else {
+        if (c >= 0xDC00 && c <= 0xDFFF) {
+          break;
+        }
       }
 
-      c = state.nextChar();
+      if (c != $backslash) {
+        break;
+      }
+
+      pos += 2;
+      c = data.getUint16(pos, Endian.little);
       switch (c) {
         case $double_quote:
         case $slash:
         case $backslash:
-          state.nextChar();
+          pos += 2;
           list.add(c);
           continue;
         case $b:
-          state.nextChar();
+          pos += 2;
           list.add(0x08);
           continue;
         case $f:
-          state.nextChar();
+          pos += 2;
           list.add(0x0c);
           continue;
         case $n:
-          state.nextChar();
+          pos += 2;
           list.add(0x0d);
           continue;
         case $r:
-          state.nextChar();
+          pos += 2;
           list.add(0x0d);
           continue;
         case $t:
-          state.nextChar();
+          pos += 2;
           list.add(0x09);
           continue;
         case $u:
-          state.nextChar();
+          pos += 2;
           var c2 = 0;
-          for (var i = 0; i < 4; i++) {
-            final c = state.ch;
+          for (var i = 0; i < 8; i += 2) {
+            final c = data.getUint16(pos + i, Endian.little);
             if (c >= $0 && c <= $9) {
               c2 = (c2 << 4) | (c - 0x30);
             } else if (c >= $a && c <= $f) {
@@ -137,10 +164,9 @@ class _Chars extends Parser<List<int>> {
             } else if (c >= $A && c <= $F) {
               c2 = (c2 << 4) | (c - $A + 10);
             } else {
+              pos -= 4;
               break loop;
             }
-
-            state.nextChar();
           }
 
           list.add(c2);
@@ -151,7 +177,6 @@ class _Chars extends Parser<List<int>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return Tuple1(list);
   }
 }
@@ -159,40 +184,42 @@ class _Chars extends Parser<List<int>> {
 class _Number extends Parser<num> {
   static final _digit = digit().as('[0-9]');
 
-  static final _digit19 = ranges1(Range($1, $9)).as('[1-9]');
+  static final _digit19 =
+      matchUint16(rangesMatcher([Range($1, $9)]), null, Endian.little)
+          .as('[1-9]');
 
   static final _dot = char($dot).as('.');
 
-  static final _eE = chars2($e, $E).as('e | E');
+  static final _eE = chars16([$e, $E]).as('e | E');
 
-  static final _exp = seq3(_eE, _signs.opt, _digit.skipMany1).as('exp');
+  static final _exp = seq3(_eE, _signs.opt, _digit.many1).as('exp');
 
-  static final _frac = seq2(_dot, _digit.skipMany1).as('frac');
+  static final _frac = seq2(_dot, _digit.many1).as('frac');
 
   static final _integer =
-      choice2(_zero, seq2(_digit19, _digit.skipMany)).as('integer');
+      choice2(seq2(_digit19, _digit.many), _zero).as('integer');
 
   static final _minus = char($minus).as('minus');
 
   static final _number =
       seq4(_minus.opt, _integer, _frac.opt, _exp.opt).capture.as('_number');
 
-  static final _signs = chars2($plus, $minus).as('signs');
+  static final _signs = chars16([$plus, $minus]).as('signs');
 
   static final _zero = char($0).as('zero');
 
   @override
-  bool handleFastParse(ParseState state) => handleParse(state) != null;
+  bool fastParse(ParseState state) => parse(state) != null;
 
   @override
-  Tuple1<num>? handleParse(ParseState state) {
+  Tuple1<num>? parse(ParseState state) {
     final r1 = _number.parse(state);
     if (r1 == null) {
       state.fail(expectedError('number'), state.pos);
       return null;
     }
 
-    _ws.skip(state);
+    _white.fastParse(state);
     final v1 = r1.$0;
     final v2 = parseNumber(v1);
     return Tuple1(v2);
@@ -219,11 +246,11 @@ class _String extends Parser<String> {
   final Parser<List<int>> chars;
 
   _String()
-      : chars = between(_quote, _chars, tokChar($quote, '"', null, _ws))
+      : chars = between(_quote, _chars, tokChar16($quote, '"', null, _white))
             .as('chars');
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     final r1 = chars.parse(state);
     if (r1 == null) {
       state.fail(expectedError('string'), state.pos);
@@ -234,7 +261,7 @@ class _String extends Parser<String> {
   }
 
   @override
-  Tuple1<String>? handleParse(ParseState state) {
+  Tuple1<String>? parse(ParseState state) {
     final r1 = chars.parse(state);
     if (r1 == null) {
       state.fail(expectedError('string'), state.pos);
@@ -247,19 +274,40 @@ class _String extends Parser<String> {
   }
 }
 
-class _WS implements Skipper {
-  final Matcher<int> _m =
-      AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
+class _White extends Parser {
+  final m = AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
 
   @override
-  void skip(ParseState state) {
+  bool fastParse(ParseState state) {
+    final data = state.data;
+    final length = state.length;
     while (true) {
-      if (_m.match(state.ch)) {
-        state.nextChar();
-        continue;
+      if (state.pos + 2 <= length) {
+        final c = data.getUint16(state.pos, Endian.little);
+        if (m.match(c)) {
+          state.pos += 2;
+          continue;
+        }
       }
 
-      break;
+      return true;
+    }
+  }
+
+  @override
+  Tuple1? parse(ParseState state) {
+    final data = state.data;
+    final length = state.length;
+    while (true) {
+      if (state.pos + 2 <= length) {
+        final c = data.getUint16(state.pos, Endian.little);
+        if (m.match(c)) {
+          state.pos += 2;
+          continue;
+        }
+      }
+
+      return const Tuple1(null);
     }
   }
 }

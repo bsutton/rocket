@@ -14,9 +14,13 @@ class StrParser extends Parser<String> {
 
   int _c = 0;
 
+  final int _length;
+
   final Tuple1<String> _res;
 
-  StrParser(this.s) : _res = Tuple1(s) {
+  StrParser(this.s)
+      : _length = s.length << 1,
+        _res = Tuple1(s) {
     if (s.isEmpty) {
       ArgumentError.value(s, 's', 'Must not be empty');
     }
@@ -30,28 +34,61 @@ class StrParser extends Parser<String> {
   }
 
   @override
-  @inline
-  bool handleFastParse(ParseState state) {
-    if (state.ch == _c) {
-      if (state.source.startsWith(s, state.pos)) {
-        state.pos += s.length;
-        state.getChar(state.pos);
-        return true;
+  bool fastParse(ParseState state) {
+    final pos = state.pos;
+    final data = state.data;
+    if (pos + _length <= state.length) {
+      final c = data.getUint16(pos, Endian.little);
+      if (c == _c) {
+        var ok = true;
+        var newPos = pos + 2;
+        for (var i = 1; i < s.length; i++) {
+          final c = data.getUint16(newPos, Endian.little);
+          if (c != s.codeUnitAt(i)) {
+            ok = false;
+            break;
+          }
+
+          newPos += 2;
+        }
+
+        if (ok) {
+          state.pos = newPos;
+          return true;
+        }
       }
     }
 
+    state.pos = pos;
     return false;
   }
 
   @override
-  @inline
-  Tuple1<String>? handleParse(ParseState state) {
-    if (state.ch == _c) {
-      if (state.source.startsWith(s, state.pos)) {
-        state.pos += s.length;
-        state.getChar(state.pos);
-        return _res;
+  Tuple1<String>? parse(ParseState state) {
+    final pos = state.pos;
+    final data = state.data;
+    if (pos + _length <= state.length) {
+      final c = data.getUint16(pos, Endian.little);
+      if (c == _c) {
+        var ok = true;
+        var newPos = pos + 2;
+        for (var i = 1; i < s.length; i++) {
+          final c = data.getUint16(newPos, Endian.little);
+          if (c != s.codeUnitAt(i)) {
+            ok = false;
+            break;
+          }
+
+          newPos += 2;
+        }
+
+        if (ok) {
+          state.pos = newPos;
+          return _res;
+        }
       }
     }
+
+    state.pos = pos;
   }
 }

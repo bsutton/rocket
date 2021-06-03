@@ -13,10 +13,10 @@ class SepByParser<E> extends Parser<List<E>> {
   }
 
   @override
-  bool handleFastParse(ParseState state) => p.fastParseSepBy(state, sep);
+  bool fastParse(ParseState state) => p.fastParseSepBy(state, sep);
 
   @override
-  Tuple1<List<E>>? handleParse(ParseState state) => p.parseSepBy(state, sep);
+  Tuple1<List<E>>? parse(ParseState state) => p.parseSepBy(state, sep);
 }
 
 extension SepByParserExt<E> on Parser<E> {

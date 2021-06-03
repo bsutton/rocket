@@ -2,11 +2,12 @@
 
 Version 0.1.9 (BETA)  
 
-Rocket is a parsing framework for parsing using efficient parsing algorithms.
+Rocket is a parsing framework for parsing binary data structures using efficient parsing algorithms.
+
+**Breaking change: The typed data `ByteData` is now used as input data for parsing.**
 
 The Rocket is a professional developers framework.  
-The Rocket is a framework for the rapid development of fast parsers.  
-Simple, convenient and fully customizable process of tracking the parsing process (allows you to track  complete, successful, or unsuccessful parsing, parsing of individual parsers, with fully customizable information output) and setting the conditional breakpoints (by position, by symbol, by the name of the parser, and so on).  
+The Rocket is a framework for the rapid development of fast parsers for parsing binary data.  
 Convenient automatic and manual assignment of labels (names) for parsers to increase the visibility of the process of tracking and debugging.  
 Simple and convenient error system.  
 Implement something properly once and reuse it everywhere.  
@@ -30,10 +31,10 @@ A parser is an abstract class called `Parser` that contains several methods. Som
 
 ```dart
 @protected
-bool handleFastParse(ParseState state);
+bool fastParse(ParseState state);
 
 @protected
-Tuple1<E>? handleParse(ParseState state);
+Tuple1<E>? parse(ParseState state);
 ```
 
 These methods should not be used directly as they are called by other general methods.  
@@ -95,7 +96,7 @@ E // Success
 Example of simple parsing. Simple parsing, in this case, means using a simple combination of parsers.
 
 ```dart
-final p1 = digit().skipMany1.right(char($Z));
+final p1 = digit().many1.right(char($Z));
 final v = p1.parseString('100Z');
 print(v); // Z (90)
 ```
@@ -108,7 +109,7 @@ But this can be solved very simply.
 
 ```dart
 main(List<String> args) {
-  final _digits = digit().skipMany1.expected('digits');
+  final _digits = digit().many1.expected('digits');
   final z = char($Z).expected('Z');
   final p1 = _digits.right(z);
   final v = p1.parseString('100');
@@ -128,7 +129,7 @@ FormatException: Expected: 'Z'
 Also you can to use safe parsing.  
 
 ```dart
-final p1 = digit().skipMany1.right(char($Z));
+final p1 = digit().many1.right(char($Z));
 final r = p1.tryParseString('Z');
 final v = r?.$0;
 if (v != null) {
@@ -157,7 +158,7 @@ https://github.com/mezoni/rocket/blob/main/example/example.dart
 Relatively speaking, parsers can be divided into several categories.
 
 - Parsers that work directly with data (eg. `char`, `str`)
-- Parsers that iterate over other parsers (eg. `many`, `skipMay`)
+- Parsers that iterate over other parsers (eg. `many`, `rep`)
 - Parsers that parse sequences of other parsers (`seq2`, `left`)
 - Parsers that parse structures composed of other parsers
 - Parsers that parse alternatives from the list of parsers
@@ -216,35 +217,6 @@ if (r == null) {
 
 By default, no error messages are generated (unless otherwise noted) for performance reasons.
 
-### How to trace
-
-There is built-in support for this.  
-When the generic parse method is called, this method checks to see if tracer is connected.  
-If the tracer is connected, then the tracking handlers are called.  
-These handlers are defined in the `ParseTraces` interface class.  
-
-```dart
-abstract class ParseTracer {
-  void enter<E>(Parser<E> parser, ParseState state);
-
-  void enterFast<E>(Parser<E> parser, ParseState state);
-
-  void leave<E>(Parser<E> parser, ParseState state, Tuple1<E>? result);
-
-  void leaveFast<E>(Parser<E> parser, ParseState state, bool result);
-}
-```
-
-This allows the developer to fully track the parsing process.  
-This means only one thing. This is a simple, convenient and fully customizable tracking of the parsing process.  
-Tracking complete, successful or unsuccessful parsing, parsing of individual parsers.  
-Fully customizable output.  
-Setting conditional breakpoints (by position, by symbol, by parser name, etc.).  
-
-Implement your own tracer and track whatever you need.  
-An example of the simplest tracer can be found in the file:  
-https://github.com/mezoni/rocket/blob/main/example/tracer_example.dart
-
 ### Performance
 
 Below are the results of testing JSON parsers. Dart SDK JSON parser and JSON parser implemented using Rocket.  
@@ -252,32 +224,33 @@ Below are the results of testing JSON parsers. Dart SDK JSON parser and JSON par
 JIT:
 
 ```
-Dart SDK JSON: k: 1.00, 42.85 MB/s, 501.03 ms (50.71%),
-Rocket JSON  : k: 1.97, 21.73 MB/s, 988.06 ms (100.00%),
+Parse 10 times: E:\prj\test_json\bin\data\canada.json
+Dart SDK JSON   : k: 1.00, 32.67 MB/s, 657.04 ms (50.38%),
+Rocket JSON     : k: 1.98, 16.46 MB/s, 1304.07 ms (100.00%),
 
-Parse 10 times: E:\prj\test_dart_json_parsers\bin\data\citm_catalog.json
-Dart SDK JSON: k: 1.00, 86.23 MB/s, 191.01 ms (58.23%),
-Rocket JSON  : k: 1.72, 50.21 MB/s, 328.02 ms (100.00%),
+Parse 10 times: E:\prj\test_json\bin\data\citm_catalog.json
+Dart SDK JSON   : k: 1.00, 75.55 MB/s, 218.01 ms (62.11%),
+Rocket JSON     : k: 1.61, 46.92 MB/s, 351.02 ms (100.00%),
 
-Parse 10 times: E:\prj\test_dart_json_parsers\bin\data\twitter.json
-Dart SDK JSON: k: 1.00, 53.62 MB/s, 101.01 ms (74.27%),
-Rocket JSON  : k: 1.35, 39.82 MB/s, 136.01 ms (100.00%),
+Parse 10 times: E:\prj\test_json\bin\data\twitter.json
+Dart SDK JSON   : k: 1.00, 57.62 MB/s, 94.00 ms (68.61%),
+Rocket JSON     : k: 1.46, 39.53 MB/s, 137.01 ms (100.00%),
 ```
 
 AOT:
 
 ```
-Parse 10 times: E:\prj\test_dart_json_parsers\bin\data\canada.json
-Dart SDK JSON: k: 1.00, 12.28 MB/s, 1748.10 ms (41.98%),
-Rocket JSON  : k: 2.38, 5.16 MB/s, 4164.24 ms (100.00%),
+Parse 10 times: E:\prj\test_json\bin\data\canada.json
+Dart SDK JSON   : k: 1.00, 24.07 MB/s, 892.05 ms (49.34%),
+Rocket JSON     : k: 2.03, 11.87 MB/s, 1808.10 ms (100.00%),
 
-Parse 10 times: E:\prj\test_dart_json_parsers\bin\data\citm_catalog.json
-Dart SDK JSON: k: 1.16, 23.90 MB/s, 689.04 ms (100.00%),
-Rocket JSON  : k: 1.00, 27.73 MB/s, 594.03 ms (86.21%),
+Parse 10 times: E:\prj\test_json\bin\data\citm_catalog.json
+Dart SDK JSON   : k: 1.00, 63.10 MB/s, 261.01 ms (59.59%),
+Rocket JSON     : k: 1.68, 37.60 MB/s, 438.02 ms (100.00%),
 
-Parse 10 times: E:\prj\test_dart_json_parsers\bin\data\twitter.json
-Dart SDK JSON: k: 1.00, 45.90 MB/s, 118.01 ms (67.82%),
-Rocket JSON  : k: 1.47, 31.13 MB/s, 174.01 ms (100.00%),
+Parse 10 times: E:\prj\test_json\bin\data\twitter.json
+Dart SDK JSON   : k: 1.00, 50.15 MB/s, 108.01 ms (69.68%),
+Rocket JSON     : k: 1.44, 34.94 MB/s, 155.01 ms (100.00%),
 ```
 
 The Rocket JSON parser was written in a few hours.  

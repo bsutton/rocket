@@ -1,5 +1,5 @@
 part of '../../matcher.dart';
 
-abstract class Matcher<T> {
-  bool match(T value);
+abstract class Matcher<E> {
+  bool match(E value);
 }

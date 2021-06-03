@@ -24,8 +24,7 @@ class AroundParser<E1, E2> extends Parser<Tuple2<E1, E2>> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -36,13 +35,11 @@ class AroundParser<E1, E2> extends Parser<Tuple2<E1, E2>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<Tuple2<E1, E2>>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<Tuple2<E1, E2>>? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p1.parse(state);
     if (r1 != null) {
@@ -56,7 +53,6 @@ class AroundParser<E1, E2> extends Parser<Tuple2<E1, E2>> {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 

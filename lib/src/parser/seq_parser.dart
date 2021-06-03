@@ -30,8 +30,7 @@ class Seq2Parser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -40,13 +39,11 @@ class Seq2Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -55,7 +52,6 @@ class Seq2Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -71,8 +67,7 @@ class Seq3Parser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -83,13 +78,11 @@ class Seq3Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -100,7 +93,6 @@ class Seq3Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -118,8 +110,7 @@ class Seq4Parser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -132,13 +123,11 @@ class Seq4Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -151,7 +140,6 @@ class Seq4Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -171,8 +159,7 @@ class Seq5Parser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -187,13 +174,11 @@ class Seq5Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -208,7 +193,6 @@ class Seq5Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -230,8 +214,7 @@ class Seq6Parser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -248,13 +231,11 @@ class Seq6Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -271,7 +252,6 @@ class Seq6Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -295,8 +275,7 @@ class Seq7Parser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -315,13 +294,11 @@ class Seq7Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -340,7 +317,6 @@ class Seq7Parser extends Parser {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 
@@ -352,14 +328,12 @@ class SeqParser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     for (var i = 0; i < ps.length; i++) {
       final parser = ps[i];
       if (!parser.fastParse(state)) {
         state.pos = pos;
-        state.ch = ch;
         return false;
       }
     }
@@ -368,14 +342,13 @@ class SeqParser extends Parser {
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     for (var i = 0; i < ps.length; i++) {
       final parser = ps[i];
       if (!parser.fastParse(state)) {
         state.pos = pos;
-        state.ch = ch;
+
         return null;
       }
     }

@@ -14,19 +14,17 @@ String _quote(Parser p) {
 /// temporary stub when defining recursive parsers.
 class DummyParser<E> extends Parser<E> {
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     throw UnsupportedError('fastParse');
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     throw UnsupportedError('parse');
   }
 }
 
 abstract class Parser<E> {
-  static ParseTracer? tracer;
-
   bool quote = true;
 
   String label = '';
@@ -40,17 +38,7 @@ abstract class Parser<E> {
   ///   state.fail(err, state.pos);
   /// }
   /// ```
-  bool fastParse(ParseState state) {
-    final t = tracer;
-    if (t == null) {
-      return handleFastParse(state);
-    } else {
-      t.enterFast(this, state);
-      final r1 = handleFastParse(state);
-      t.leaveFast(this, state, r1);
-      return r1;
-    }
-  }
+  bool fastParse(ParseState state);
 
   @experimental
   @protected
@@ -84,7 +72,6 @@ abstract class Parser<E> {
     }
 
     while (true) {
-      final ch = state.ch;
       final pos = state.pos;
       if (!sep.fastParse(state)) {
         break;
@@ -92,47 +79,12 @@ abstract class Parser<E> {
 
       if (!fastParse(state)) {
         state.pos = pos;
-        state.ch = ch;
         break;
       }
     }
 
     return true;
   }
-
-  @experimental
-  @protected
-  bool fastParseSkipMany(ParseState state) {
-    while (fastParse(state)) {
-      //
-    }
-
-    return true;
-  }
-
-  @experimental
-  @protected
-  bool fastParseSkipMany1(ParseState state) {
-    if (!fastParse(state)) {
-      return false;
-    }
-
-    while (fastParse(state)) {
-      //
-    }
-
-    return true;
-  }
-
-  /// A `protected` method that passively parses data. Called from the
-  /// [fastParse] method.
-  @protected
-  bool handleFastParse(ParseState state);
-
-  /// A `protected` method that actively parses data. Called from the [parse]
-  /// method.
-  @protected
-  Tuple1<E>? handleParse(ParseState state);
 
   /// Parses input data actively and produces the result.
   ///
@@ -141,17 +93,7 @@ abstract class Parser<E> {
   /// ```
   /// final r1 = p.parse(state);
   /// ```
-  Tuple1<E>? parse(ParseState state) {
-    final t = tracer;
-    if (t == null) {
-      return handleParse(state);
-    } else {
-      t.enter(this, state);
-      final r1 = handleParse(state);
-      t.leave(this, state, r1);
-      return r1;
-    }
-  }
+  Tuple1<E>? parse(ParseState state);
 
   @experimental
   @protected
@@ -201,7 +143,6 @@ abstract class Parser<E> {
 
     final list = [r1.$0];
     while (true) {
-      final ch = state.ch;
       final pos = state.pos;
       if (!sep.fastParse(state)) {
         break;
@@ -210,7 +151,6 @@ abstract class Parser<E> {
       final r2 = parse(state);
       if (r2 == null) {
         state.pos = pos;
-        state.ch = ch;
         break;
       }
 
@@ -263,14 +203,4 @@ abstract class Parser<E> {
     name = name[0].toLowerCase() + name.substring(1);
     return name;
   }
-}
-
-abstract class ParseTracer {
-  void enter<E>(Parser<E> parser, ParseState state);
-
-  void enterFast<E>(Parser<E> parser, ParseState state);
-
-  void leave<E>(Parser<E> parser, ParseState state, Tuple1<E>? result);
-
-  void leaveFast<E>(Parser<E> parser, ParseState state, bool result);
 }

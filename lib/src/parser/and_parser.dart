@@ -23,12 +23,10 @@ class AndParser extends Parser {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     final r1 = p.fastParse(state);
     state.pos = pos;
-    state.ch = ch;
     if (!r1) {
       return false;
     }
@@ -37,12 +35,10 @@ class AndParser extends Parser {
   }
 
   @override
-  Tuple1? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1? parse(ParseState state) {
     final pos = state.pos;
     final r1 = p.fastParse(state);
     state.pos = pos;
-    state.ch = ch;
     if (r1) {
       return const Tuple1(null);
     }

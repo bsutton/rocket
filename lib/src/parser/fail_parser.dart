@@ -21,13 +21,13 @@ class FailParser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     state.fail(err, state.pos);
     return false;
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     state.fail(err, state.pos);
   }
 }
@@ -49,7 +49,7 @@ class OrFailParser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     if (p.fastParse(state)) {
       return true;
     }
@@ -59,7 +59,7 @@ class OrFailParser<E> extends Parser<E> {
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
+  Tuple1<E>? parse(ParseState state) {
     final r1 = p.parse(state);
     if (r1 != null) {
       return r1;

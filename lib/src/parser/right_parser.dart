@@ -20,8 +20,7 @@ class RightParser<E> extends Parser<E> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    final ch = state.ch;
+  bool fastParse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       if (p2.fastParse(state)) {
@@ -30,13 +29,11 @@ class RightParser<E> extends Parser<E> {
     }
 
     state.pos = pos;
-    state.ch = ch;
     return false;
   }
 
   @override
-  Tuple1<E>? handleParse(ParseState state) {
-    final ch = state.ch;
+  Tuple1<E>? parse(ParseState state) {
     final pos = state.pos;
     if (p1.fastParse(state)) {
       final r1 = p2.parse(state);
@@ -47,7 +44,6 @@ class RightParser<E> extends Parser<E> {
     }
 
     state.pos = pos;
-    state.ch = ch;
   }
 }
 

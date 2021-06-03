@@ -19,20 +19,16 @@ class CaptureParser extends Parser<String> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
-    if (p.fastParse(state)) {
-      return true;
-    }
-
-    return false;
-  }
+  bool fastParse(ParseState state) => p.fastParse(state);
 
   @override
-  Tuple1<String>? handleParse(ParseState state) {
+  Tuple1<String>? parse(ParseState state) {
     final start = state.pos;
     if (p.fastParse(state)) {
-      final result = state.source.substring(start, state.pos);
-      return Tuple1(result);
+      final length = (state.pos - start) >> 1;
+      final charCodes = state.data.buffer.asUint16List(start, length);
+      final v1 = String.fromCharCodes(charCodes);
+      return Tuple1(v1);
     }
   }
 }

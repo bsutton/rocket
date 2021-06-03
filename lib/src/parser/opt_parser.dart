@@ -18,13 +18,13 @@ class OptParser<E> extends Parser<E?> {
   }
 
   @override
-  bool handleFastParse(ParseState state) {
+  bool fastParse(ParseState state) {
     p.fastParse(state);
     return true;
   }
 
   @override
-  Tuple1<E?>? handleParse(ParseState state) {
+  Tuple1<E?>? parse(ParseState state) {
     final r1 = p.parse(state);
     if (r1 == null) {
       return Tuple1<E?>(null);

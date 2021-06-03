@@ -21,7 +21,8 @@ final parser = _createParser();
 
 final _chars = _Chars().as('chars');
 
-final _white = _White();
+final _white =
+    matchUint16(IntMatcher([9, 10, 13, 32]), null, Endian.little).many;
 
 Parser _createParser() {
   final _closeBrace = tokChar16($close_brace, '}', null, _white);
@@ -271,44 +272,6 @@ class _String extends Parser<String> {
     final v1 = r1.$0;
     final v2 = String.fromCharCodes(v1);
     return Tuple1(v2);
-  }
-}
-
-class _White extends Parser {
-  final m = AsciiMatcher(Ascii.cr | Ascii.lf | Ascii.ht | Ascii.space);
-
-  @override
-  bool fastParse(ParseState state) {
-    final data = state.data;
-    final length = state.length;
-    while (true) {
-      if (state.pos + 2 <= length) {
-        final c = data.getUint16(state.pos, Endian.little);
-        if (m.match(c)) {
-          state.pos += 2;
-          continue;
-        }
-      }
-
-      return true;
-    }
-  }
-
-  @override
-  Tuple1? parse(ParseState state) {
-    final data = state.data;
-    final length = state.length;
-    while (true) {
-      if (state.pos + 2 <= length) {
-        final c = data.getUint16(state.pos, Endian.little);
-        if (m.match(c)) {
-          state.pos += 2;
-          continue;
-        }
-      }
-
-      return const Tuple1(null);
-    }
   }
 }
 

@@ -31,6 +31,22 @@ class MatchUint16Parser<E> extends Parser<E> {
   }
 
   @override
+  bool fastParseMany(ParseState state) {
+    while (true) {
+      final pos = state.pos;
+      if (pos + 2 <= state.length) {
+        final v1 = state.data.getUint16(pos, endian);
+        if (m.match(v1)) {
+          state.pos += 2;
+          continue;
+        }
+      }
+
+      return true;
+    }
+  }
+
+  @override
   Tuple1<E>? parse(ParseState state) {
     final pos = state.pos;
     if (pos + 2 <= state.length) {

@@ -30,17 +30,6 @@ Use parsers to quickly implement efficient data validators.
 A parser is an abstract class called `Parser` that contains several methods. Some methods for active parsing, others for passive parsing.
 
 ```dart
-@protected
-bool fastParse(ParseState state);
-
-@protected
-Tuple1<E>? parse(ParseState state);
-```
-
-These methods should not be used directly as they are called by other general methods.  
-General methods are used for direct parsing. There are also two of them.  
-
-```dart
 bool fastParse(ParseState state);
 
 Tuple1<E>? parse(ParseState state);

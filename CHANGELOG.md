@@ -1,3 +1,8 @@
+## 0.1.10
+
+- Breaking change: Everything has been completely reimplemented. Now you can parse any data types (text, binary etc). 
+- Removed error `UnexpectedError`
+
 ## 0.1.9
 
 - Breaking change: The typed data `ByteData` is now used as input data for parsing

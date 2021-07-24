@@ -1,6 +1,6 @@
 part of '../../buffer.dart';
 
-class Buffer<E> extends ListBase<E> {
+class Buffer<E> extends ListBase<E?> {
   int _length = 0;
 
   final List<E?> _list;
@@ -16,16 +16,16 @@ class Buffer<E> extends ListBase<E> {
   }
 
   @override
-  E operator [](int index) {
+  E? operator [](int index) {
     if (index >= _length) {
       throw RangeError.index(index, this);
     }
 
-    return _list[index]!;
+    return _list[index];
   }
 
   @override
-  void operator []=(int index, E value) {
+  void operator []=(int index, E? value) {
     if (index >= _length) {
       throw RangeError.index(index, this);
     }
@@ -34,7 +34,7 @@ class Buffer<E> extends ListBase<E> {
   }
 
   @override
-  void add(E element) {
+  void add(E? element) {
     if (_length == _list.length) {
       _list.length *= 2;
     }

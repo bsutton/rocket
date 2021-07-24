@@ -2,12 +2,10 @@
 
 Version 0.1.10 (BETA)  
 
-Rocket is a parsing framework for parsing binary data structures using efficient parsing algorithms.
-
-**Breaking change: The typed data `ByteData` is now used as input data for parsing.**
+Rocket is a parsing framework for parsing any kind (text, binary etc) of data structures using efficient parsing algorithms.
 
 The Rocket is a professional developers framework.  
-The Rocket is a framework for the rapid development of fast parsers for parsing binary data.  
+The Rocket is a framework for the rapid development of fast parsers.  
 Convenient automatic and manual assignment of labels (names) for parsers to increase the visibility of the process of tracking and debugging.  
 Simple and convenient error system.  
 Implement something properly once and reuse it everywhere.  
@@ -23,19 +21,13 @@ Use parsers to quickly implement efficient data validators.
 - Documentation
 - Useful "how to"
 
-***To make this project better you can make a donation for development.***  
-
 ### What is a parser
 
-A parser is an abstract class called `Parser` that contains several methods. Some methods for active parsing, others for passive parsing.
+A parser is an abstract class called `Parser` that contains method `parse`.
 
 ```dart
-bool fastParse(ParseState state);
-
 Tuple1<E>? parse(ParseState state);
 ```
-
-It also contains other methods, but these are not methods of direct parsing (direct use), but to improve the efficiency of parsing.
 
 ### How to parse
 
@@ -55,32 +47,21 @@ import 'package:charcode/ascii.dart';
 These `Parser` static extension methods include the following methods:
 
 ```dart
-bool fastParseString(ParseState state);
-
 E parseString(ParseState state);
-
-bool tryFastParseString(ParseState state);
 
 Tuple<E>? tryParseString(ParseState state);
 ```
 
-The `try` versions do not throw an exception on parse error and return the parse result directly.  
-The result can be one of the following, as defined for methods `fastParse` and `parse`:  
+The `try` version do not throw an exception on parse error and return the parse result directly.  
+The result can be one of the following:  
 
 ```dart
-true // Success
-false // Failure
 Tuple<E> // Success
 null // Failure
 ```
 
-The other two methods return the parse value directly and throw an exception if no value is present.  
-The value can be anything as defined for the `fastParse` and `parse` methods (including `null`, because `null` is also a normal value).  
-
-```dart
-true // Success
-E // Success
-```
+The another method return the parse value directly and throw an exception if no value is present.  
+The value can be anything as defined for the `parse` method (including `null`, because `null` is also a normal value).  
 
 Example of simple parsing. Simple parsing, in this case, means using a simple combination of parsers.
 
@@ -126,15 +107,6 @@ if (v != null) {
 }
 ```
 
-Or in the case of just validation.  
-
-```dart
-final p1 = digit().skipMany1.right(char($Z));
-if (p1.tryFastParseString('1Z')) {
-  print('Parsing passed, data validated');
-}
-```
-
 ### How to parse complex data
 
 An example of a complex parser is the JSON parser.  
@@ -177,7 +149,6 @@ These two types are:
 
 ```dart
 ExpectedError
-UnexpectedError
 ```
 
 Error messages created using these types will be combined into one message (by key of each type) with all messages of this type.

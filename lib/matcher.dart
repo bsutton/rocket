@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
-import 'parse.dart';
+import 'parse_string.dart';
+import 'range.dart';
 
 part 'src/matcher/ascii_matcher.dart';
 part 'src/matcher/int_matcher.dart';

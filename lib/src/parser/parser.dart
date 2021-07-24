@@ -2,187 +2,43 @@ part of '../../parser.dart';
 
 const inline = pragma('vm:prefer-inline');
 
-String _quote(Parser p) {
-  if (p.quote) {
-    return '($p)';
-  }
+RefParser<I, O> ref<I, O>() => RefParser();
 
-  return '$p';
-}
+typedef AnyParser<I> = Parser<I, dynamic>;
 
-/// The [DummyParser] is parser that doesn't parse anything and is used as a
-/// temporary stub when defining recursive parsers.
-class DummyParser<E> extends Parser<E> {
-  @override
-  bool fastParse(ParseState state) {
-    throw UnsupportedError('fastParse');
+typedef AnyStringParser<O> = Parser<String, dynamic>;
+
+typedef StringParser<O> = Parser<String, O>;
+
+class DummyParser<I, O> extends Parser<I, O> {
+  DummyParser() {
+    label = 'dummy';
   }
 
   @override
-  Tuple1<E>? parse(ParseState state) {
+  Tuple1<O>? parse(ParseInput<I> input, ParseState state) {
     throw UnsupportedError('parse');
   }
 }
 
-abstract class Parser<E> {
-  bool quote = true;
+class ParseError {
+  final String element;
+
+  final String group;
+
+  ParseError(this.group, this.element);
+
+  ParseError.expected(String expected, [String quote = ''])
+      : element = '$quote$expected$quote',
+        group = 'Expected';
+}
+
+abstract class Parser<I, O> {
+  ParseError? error;
 
   String label = '';
 
-  /// Parses input data passively, with minimal consumption of system resources
-  /// during parsing.
-  ///
-  /// Returns [true] if parsing was successful; otherwise returns [false].
-  /// ```dart
-  /// if(!fastParse(state)) {
-  ///   state.fail(err, state.pos);
-  /// }
-  /// ```
-  bool fastParse(ParseState state);
-
-  @experimental
-  @protected
-  bool fastParseMany(ParseState state) {
-    while (true) {
-      if (!fastParse(state)) {
-        return true;
-      }
-    }
-  }
-
-  @experimental
-  @protected
-  bool fastParseMany1(ParseState state) {
-    if (!fastParse(state)) {
-      return false;
-    }
-
-    while (true) {
-      if (!fastParse(state)) {
-        return true;
-      }
-    }
-  }
-
-  @experimental
-  @protected
-  bool fastParseSepBy(ParseState state, Parser sep) {
-    if (!fastParse(state)) {
-      return true;
-    }
-
-    while (true) {
-      final pos = state.pos;
-      if (!sep.fastParse(state)) {
-        break;
-      }
-
-      if (!fastParse(state)) {
-        state.pos = pos;
-        break;
-      }
-    }
-
-    return true;
-  }
-
-  /// Parses input data actively and produces the result.
-  ///
-  /// Returns [Tuple1] of the result if parsing was successful; otherwise
-  /// returns [null].
-  /// ```
-  /// final r1 = p.parse(state);
-  /// ```
-  Tuple1<E>? parse(ParseState state);
-
-  @experimental
-  @protected
-  Tuple1<List<E>>? parseMany(ParseState state) {
-    final r1 = parse(state);
-    if (r1 == null) {
-      return Tuple1(<E>[]);
-    }
-
-    final list = [r1.$0];
-    while (true) {
-      final r1 = parse(state);
-      if (r1 == null) {
-        return Tuple1(list);
-      }
-
-      list.add(r1.$0);
-    }
-  }
-
-  @experimental
-  @protected
-  Tuple1<List<E>>? parseMany1(ParseState state) {
-    final r1 = parse(state);
-    if (r1 == null) {
-      return null;
-    }
-
-    final list = [r1.$0];
-    while (true) {
-      final r1 = parse(state);
-      if (r1 == null) {
-        return Tuple1(list);
-      }
-
-      list.add(r1.$0);
-    }
-  }
-
-  @experimental
-  @protected
-  Tuple1<List<E>>? parseSepBy(ParseState state, Parser sep) {
-    final r1 = parse(state);
-    if (r1 == null) {
-      return Tuple1(<E>[]);
-    }
-
-    final list = [r1.$0];
-    while (true) {
-      final pos = state.pos;
-      if (!sep.fastParse(state)) {
-        break;
-      }
-
-      final r2 = parse(state);
-      if (r2 == null) {
-        state.pos = pos;
-        break;
-      }
-
-      list.add(r2.$0);
-    }
-
-    return Tuple1(list);
-  }
-
-  @experimental
-  @protected
-  Tuple1? parseSkipMany(ParseState state) {
-    while (fastParse(state)) {
-      //
-    }
-
-    return const Tuple1(null);
-  }
-
-  @experimental
-  @protected
-  Tuple1? parseSkipMany1(ParseState state) {
-    if (!fastParse(state)) {
-      return null;
-    }
-
-    while (fastParse(state)) {
-      //
-    }
-
-    return const Tuple1(null);
-  }
+  Tuple1<O>? parse(ParseInput<I> input, ParseState state);
 
   @override
   String toString() {
@@ -190,17 +46,23 @@ abstract class Parser<E> {
       return label;
     }
 
-    var name = '$runtimeType';
-    final index = name.indexOf('<');
-    if (index != -1) {
-      name = name.substring(0, index);
-    }
-
-    if (name.endsWith('Parser')) {
-      name = name.substring(0, name.length - 6);
-    }
-
-    name = name[0].toLowerCase() + name.substring(1);
-    return name;
+    return super.toString();
   }
+
+  static String quote(Parser p) {
+    final label = p.label;
+    if (label.contains(' ')) {
+      return '(' + label + ')';
+    }
+
+    return label;
+  }
+}
+
+class RefParser<I, O> extends Parser<I, O> {
+  Parser<I, O> p = DummyParser();
+
+  @override
+  Tuple1<O>? parse(ParseInput<I> input, ParseState state) =>
+      p.parse(input, state);
 }

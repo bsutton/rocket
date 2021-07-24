@@ -121,7 +121,7 @@ class AsciiMatcher extends Matcher<int> {
   bool match(int value) => value <= 127 && _table[value] & mask != 0;
 }
 
-class IsAlnumMatcher extends Matcher<int> {
+class IsAlnumMatcher implements Matcher<int> {
   @override
   @inline
   bool match(int value) => value <= 127 && _table[value] & Ascii.alnum != 0;
